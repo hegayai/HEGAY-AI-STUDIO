@@ -1,5 +1,3 @@
-// app/api/run-workflow/[id]/route.ts
-
 import { NextResponse } from "next/server";
 import { loadWorkflow } from "@/lib/loadWorkflow";
 import { executeWorkflow } from "@/lib/workflowRuntime";
@@ -8,26 +6,26 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const workflowId = params.id;
-  const body = await req.json();
-  const initialContext = body.initialContext || {};
-  const spaceId = body.spaceId;
-
-  if (!spaceId) {
-    return NextResponse.json(
-      { error: "spaceId is required" },
-      { status: 400 }
-    );
-  }
-
   try {
-    const workflow = await loadWorkflow(workflowId, spaceId);
-    const result = await executeWorkflow(workflow, initialContext);
+    const workflowId = params.id;
 
-    return NextResponse.json({ workflowId, spaceId, result });
+    const workflow = await loadWorkflow(workflowId);
+
+    if (!workflow) {
+      return NextResponse.json(
+        { error: "Workflow not found" },
+        { status: 404 }
+      );
+    }
+
+    const body = await req.json().catch(() => ({}));
+
+    const result = await executeWorkflow(workflow, body);
+
+    return NextResponse.json(result);
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Runtime error" },
+      { error: err.message || "Workflow execution failed" },
       { status: 500 }
     );
   }

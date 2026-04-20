@@ -1,13 +1,27 @@
-// lib/loadWorkflow.ts
+import prisma from "./prisma";
+import { WorkflowDefinition } from "./workflowTypes";
 
-export async function loadWorkflow(workflowId: string, spaceId?: string) {
-  const url = new URL(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/workflows/${workflowId}`
-  );
-  if (spaceId) url.searchParams.set("spaceId", spaceId);
+/**
+ * Hybrid: keeps DB-backed workflow loading.
+ * Assumes a Workflow model with a JSON definition field.
+ *
+ * model Workflow {
+ *   id          String   @id @default(cuid())
+ *   name        String
+ *   definition  Json
+ *   createdAt   DateTime @default(now())
+ *   updatedAt   DateTime @updatedAt
+ * }
+ */
+export async function loadWorkflow(
+  id: string
+): Promise<WorkflowDefinition | null> {
+  const wf = await prisma.workflow.findUnique({
+    where: { id },
+  });
 
-  const res = await fetch(url.toString());
-  if (!res.ok) throw new Error("Workflow not found");
-  const data = await res.json();
-  return data.workflow;
+  if (!wf) return null;
+
+  // If definition is stored as Json, it should already be an object
+  return wf.definition as unknown as WorkflowDefinition;
 }

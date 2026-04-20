@@ -1,100 +1,58 @@
-// lib/jobQueue.ts
+import prisma from "./prisma";
 
-export type JobStatus = "queued" | "running" | "completed" | "failed";
-
-export interface WorkflowJob {
-  id: string;
-  workflowId: string;
-  spaceId: string;
-  ownerId?: string;
-  initialContext: Record<string, any>;
-  status: JobStatus;
-  createdAt: string;
-  updatedAt: string;
-  startedAt?: string;
-  finishedAt?: string;
-  error?: string;
-
-  result?: {
-    finalContext: Record<string, any>;
-    logs: string[];
-    trace: any[];
-    images?: {
-      url: string;
-      meta?: Record<string, any>;
-    }[];
-  };
+export async function enqueueJob(workflowId: string, payload: any = {}) {
+  return prisma.job.create({
+    data: {
+      workflowId,
+      payload,
+      status: "pending",
+    },
+  });
 }
 
-const JOBS =
-  ((globalThis as any).__HEGAY_JOB_QUEUE__ as Map<string, WorkflowJob> | undefined) ||
-  new Map<string, WorkflowJob>();
+export async function claimNextJob() {
+  const job = await prisma.job.findFirst({
+    where: { status: "pending" },
+    orderBy: { createdAt: "asc" },
+  });
 
-(globalThis as any).__HEGAY_JOB_QUEUE__ = JOBS;
+  if (!job) return null;
 
-function nowISO() {
-  return new Date().toISOString();
+  return prisma.job.update({
+    where: { id: job.id },
+    data: { status: "processing" },
+  });
 }
 
-export function listJobs(spaceId?: string, limit = 50): WorkflowJob[] {
-  let all = Array.from(JOBS.values());
-  if (spaceId) all = all.filter((j) => j.spaceId === spaceId);
-  return all.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).slice(0, limit);
+export async function completeJob(jobId: string, result: any) {
+  return prisma.job.update({
+    where: { id: jobId },
+    data: {
+      status: "completed",
+      result,
+    },
+  });
 }
 
-export function getJob(id: string): WorkflowJob | undefined {
-  return JOBS.get(id);
+export async function failJob(jobId: string, error: string) {
+  return prisma.job.update({
+    where: { id: jobId },
+    data: {
+      status: "failed",
+      error,
+    },
+  });
 }
 
-export function enqueueJob(
-  workflowId: string,
-  initialContext: Record<string, any>,
-  spaceId: string,
-  ownerId?: string
-): WorkflowJob {
-  const id = `job_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-  const job: WorkflowJob = {
-    id,
-    workflowId,
-    spaceId,
-    ownerId,
-    initialContext,
-    status: "queued",
-    createdAt: nowISO(),
-    updatedAt: nowISO(),
-  };
-  JOBS.set(id, job);
-  return job;
+export async function getJob(jobId: string) {
+  return prisma.job.findUnique({
+    where: { id: jobId },
+  });
 }
 
-export function claimNextJob(spaceId?: string): WorkflowJob | null {
-  const queued = Array.from(JOBS.values()).find(
-    (j) => j.status === "queued" && (!spaceId || j.spaceId === spaceId)
-  );
-  if (!queued) return null;
-  queued.status = "running";
-  queued.startedAt = nowISO();
-  queued.updatedAt = nowISO();
-  JOBS.set(queued.id, queued);
-  return queued;
-}
-
-export function completeJob(id: string, result: any) {
-  const job = JOBS.get(id);
-  if (!job) return;
-  job.status = "completed";
-  job.result = result;
-  job.finishedAt = nowISO();
-  job.updatedAt = nowISO();
-  JOBS.set(id, job);
-}
-
-export function failJob(id: string, error: string) {
-  const job = JOBS.get(id);
-  if (!job) return;
-  job.status = "failed";
-  job.error = error;
-  job.finishedAt = nowISO();
-  job.updatedAt = nowISO();
-  JOBS.set(id, job);
+export async function listJobs(limit = 50) {
+  return prisma.job.findMany({
+    orderBy: { createdAt: "desc" },
+    take: limit,
+  });
 }

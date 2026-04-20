@@ -1,4 +1,4 @@
-import EngineTemplate from "../EngineTemplate";
+import EngineTemplate from "../pages";
 import ModelTestPanel from "../../components/ModelTestPanel";
 import { CURRENT_USER_SUBSCRIPTION, canUseFeature } from "../../subscriptionConfig";
 import LockedFeature from "../../components/LockedFeature";

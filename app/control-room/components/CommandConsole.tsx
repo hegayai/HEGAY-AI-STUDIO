@@ -1,68 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import { useNotify } from "./NotificationProvider";
 
 export default function CommandConsole() {
-  const [input, setInput] = useState("");
+  const [cmd, setCmd] = useState("");
   const [history, setHistory] = useState<string[]>([]);
-  const notify = useNotify();
 
-  const runCommand = async () => {
-    if (!input.trim()) return;
-
-    const cmd = input.trim();
-    setInput("");
+  async function runCommand() {
+    if (!cmd.trim()) return;
 
     setHistory((prev) => [...prev, `> ${cmd}`]);
 
-    try:
+    try {
       const res = await fetch("/api/system/console", {
         method: "POST",
         body: JSON.stringify({ command: cmd }),
       });
 
       const data = await res.json();
-
-      if (data.success) {
-        setHistory((prev) => [...prev, data.output]);
-        notify("Command executed", "success");
-      } else {
-        setHistory((prev) => [...prev, data.output]);
-        notify("Command failed", "error");
-      }
-    } catch (err: any) {
-      setHistory((prev) => [...prev, err.message]);
-      notify("Console error", "error");
+      setHistory((prev) => [...prev, data.output]);
+    } catch (err) {
+      setHistory((prev) => [...prev, "Error executing command"]);
     }
-  };
+
+    setCmd("");
+  }
 
   return (
-    <div className="p-6 rounded-xl bg-gray-900/60 border border-gray-700 shadow-xl mt-10">
-      <h2 className="text-2xl font-semibold mb-4">Command Console</h2>
-
-      {/* OUTPUT WINDOW */}
-      <div className="bg-black/50 p-4 rounded-lg h-64 overflow-y-auto font-mono text-sm border border-gray-800">
+    <div className="w-full h-full flex flex-col bg-black/40 border border-white/10 rounded-lg p-4">
+      <div className="flex-1 overflow-y-auto text-xs text-slate-200 space-y-1">
         {history.map((line, i) => (
-          <div key={i} className="text-gray-300 whitespace-pre-wrap">
-            {line}
-          </div>
+          <div key={i}>{line}</div>
         ))}
       </div>
 
-      {/* INPUT */}
-      <div className="mt-4 flex gap-3">
+      <div className="mt-3 flex gap-2">
         <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={cmd}
+          onChange={(e) => setCmd(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && runCommand()}
-          className="flex-1 p-3 rounded bg-black/40 border border-gray-700 text-gray-200"
-          placeholder="Enter command…"
+          className="flex-1 rounded-lg bg-black/60 border border-white/10 px-3 py-2 text-xs text-slate-100 outline-none"
+          placeholder="Enter command..."
         />
 
         <button
           onClick={runCommand}
-          className="px-6 py-3 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-semibold"
+          className="px-4 py-2 text-xs rounded-lg bg-blue-500/40 border border-blue-400/40 text-blue-100 hover:bg-blue-500/60 transition"
         >
           Run
         </button>

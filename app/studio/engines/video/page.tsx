@@ -1,4 +1,4 @@
-import EngineTemplate from "../EngineTemplate";
+import EngineTemplate from "../pages";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
 export default function VideoUniversePage() {

@@ -1,12 +1,30 @@
 import { NextResponse } from "next/server";
-import prisma from "@/src/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  const { threadId, role, content } = await req.json();
+  try {
+    const { threadId, role, content } = await req.json();
 
-  const message = await prisma.threadMessage.create({
-    data: { threadId, role, content },
-  });
+    if (!threadId || !role || !content) {
+      return NextResponse.json(
+        { error: "Missing threadId, role, or content" },
+        { status: 400 }
+      );
+    }
 
-  return NextResponse.json({ message });
+    const message = await prisma.message.create({
+      data: {
+        threadId,
+        role,
+        content,
+      },
+    });
+
+    return NextResponse.json({ message });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || "Message creation failed" },
+      { status: 500 }
+    );
+  }
 }

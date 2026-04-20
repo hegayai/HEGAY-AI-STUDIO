@@ -4,38 +4,106 @@ import StudioHero from "@/components/StudioHero";
 
 export default function DashboardPage() {
   return (
-    <main className="cosmic-bg min-h-screen px-6 py-10 space-y-10">
-
-      {/* HERO SECTION */}
+    <div className="w-full p-8 space-y-12">
+      {/* Hero Section */}
       <StudioHero />
 
-      <section className="rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl p-6 text-white/70">
-        <h2 className="text-xl font-semibold text-[color:var(--hegay-gold)]">
-          Studio Dashboard
-        </h2>
-        <p className="text-sm mt-2">
-          A secondary dashboard for managing tools, assets, and creative flows.
-        </p>
+      {/* Quick Actions */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold">Quick Actions</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <ActionCard
+            title="Engines"
+            description="Access image, video, audio, writing, and worldbuilding engines."
+            href="/studio/engines"
+          />
+
+          <ActionCard
+            title="Command Center"
+            description="Control workflows, agents, and system intelligence."
+            href="/studio/command-center"
+          />
+
+          <ActionCard
+            title="Worker Agent"
+            description="Monitor and inspect workflow jobs in real time."
+            href="/studio/worker-agent"
+          />
+        </div>
       </section>
 
-      <section className="grid gap-6 md:grid-cols-2 text-white/70">
+      {/* System Overview */}
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold">System Overview</h2>
 
-        <div className="rounded-3xl border border-white/10 bg-black/30 p-5 space-y-2">
-          <h3 className="text-lg font-semibold text-white">Assets</h3>
-          <p className="text-sm text-white/60">
-            Manage generated images, videos, and audio files.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <OverviewCard
+            title="Engines"
+            items={[
+              "Image Engine",
+              "Video Engine",
+              "Audio Lab",
+              "Writing Engine",
+              "Worldbuilder",
+            ]}
+          />
+
+          <OverviewCard
+            title="Realms"
+            items={[
+              "Origin Realm",
+              "Pantheon Realm",
+              "Civilizations",
+              "Dream Realm",
+              "Culture Realm",
+            ]}
+          />
         </div>
-
-        <div className="rounded-3xl border border-white/10 bg-black/30 p-5 space-y-2">
-          <h3 className="text-lg font-semibold text-white">Activity</h3>
-          <p className="text-sm text-white/60">
-            Track recent actions, tasks, and creative operations.
-          </p>
-        </div>
-
       </section>
+    </div>
+  );
+}
 
-    </main>
+/* ------------------------------
+   ACTION CARD
+------------------------------ */
+function ActionCard({
+  title,
+  description,
+  href,
+}: {
+  title: string;
+  description: string;
+  href: string;
+}) {
+  return (
+    <a
+      href={href}
+      className="block p-6 rounded-xl border border-gray-800 bg-black/20 hover:bg-black/30 transition"
+    >
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-400 text-sm">{description}</p>
+    </a>
+  );
+}
+
+/* ------------------------------
+   OVERVIEW CARD
+------------------------------ */
+function OverviewCard({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div className="p-6 rounded-xl border border-gray-800 bg-black/20">
+      <h3 className="text-xl font-semibold mb-4">{title}</h3>
+
+      <ul className="space-y-2 text-gray-400 text-sm">
+        {items.map((item) => (
+          <li key={item} className="flex items-center gap-2">
+            <span className="w-2 h-2 bg-white rounded-full"></span>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

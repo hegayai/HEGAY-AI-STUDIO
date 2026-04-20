@@ -1,84 +1,34 @@
 import { WorkflowDefinition, WorkflowResult, WorkflowStep } from "./types";
-import { modelRouter } from "@/ai/modelRouter";
-import { systemPrompt as defaultSystemPrompt } from "@/ai/prompts/systemPrompt";
+import { modelRouter } from "@/app/api/modelRouter";
+import { systemPrompt as defaultSystemPrompt } from "@/app/ai/prompts/systemPrompt";
 
 export async function runWorkflow(
-  workflow: WorkflowDefinition
+  workflow: WorkflowDefinition,
+  input: string
 ): Promise<WorkflowResult> {
-  const logs: string[] = [];
-  const outputs: Record<string, unknown> = {};
+  const steps: WorkflowStep[] = [];
+  let currentInput = input;
 
-  const log = (msg: string) => {
-    const line = `[${workflow.name}] ${msg}`;
-    logs.push(line);
-    console.log(line);
-  };
+  for (const step of workflow.steps) {
+    const prompt = step.prompt.replace("{input}", currentInput);
 
-  log(`Starting workflow with ${workflow.steps.length} step(s).`);
+    const result = await modelRouter({
+      prompt,
+      model: step.model,
+      systemPrompt: step.systemPrompt || defaultSystemPrompt,
+    });
 
-  for (let i = 0; i < workflow.steps.length; i++) {
-    const step = workflow.steps[i];
-    log(`Step ${i + 1}: type=${step.type}${step.name ? ` name=${step.name}` : ""}`);
+    steps.push({
+      name: step.name,
+      output: result,
+    });
 
-    try {
-      await runStep(step, outputs, log);
-    } catch (err: any) {
-      log(`Error in step ${i + 1}: ${err?.message ?? String(err)}`);
-      return {
-        success: false,
-        logs,
-        outputs,
-      };
-    }
+    currentInput = result;
   }
-
-  log("Workflow completed successfully.");
 
   return {
-    success: true,
-    logs,
-    outputs,
+    workflowName: workflow.name,
+    steps,
+    finalOutput: currentInput,
   };
-}
-
-async function runStep(
-  step: WorkflowStep,
-  outputs: Record<string, unknown>,
-  log: (msg: string) => void
-) {
-  if (step.type === "delay") {
-    const ms = step.ms ?? 1000;
-    log(`Delaying for ${ms}ms...`);
-    await new Promise((resolve) => setTimeout(resolve, ms));
-    return;
-  }
-
-  if (step.type === "log") {
-    log(step.message ?? "Log step with no message.");
-    return;
-  }
-
-  if (step.type === "model") {
-    const provider = step.provider ?? "openai";
-    const model = step.model ?? "gpt-4o-mini";
-    const sysPrompt = step.systemPrompt ?? defaultSystemPrompt;
-    const userPrompt = step.prompt ?? "";
-
-    log(
-      `Calling model: provider=${provider}, model=${model}, prompt="${userPrompt.slice(
-        0,
-        80
-      )}..."`
-    );
-
-    const response = await modelRouter(provider, model, sysPrompt, userPrompt);
-
-    const key = step.name ?? `step_${Date.now()}`;
-    outputs[key] = response;
-    log(`Model step stored output under key="${key}".`);
-
-    return;
-  }
-
-  throw new Error(`Unknown step type: ${step.type}`);
 }

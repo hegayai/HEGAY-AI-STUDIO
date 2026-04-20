@@ -1,19 +1,22 @@
 "use client";
 
-import StudioSidebar from "@/app/components/ui/StudioSidebar";
+import StudioSidebar from "@/components/StudioSidebar";
 import Topbar from "@/app/components/ui/Topbar";
 
-export default function RealmsLayout({ children }) {
+export default function RealmsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex min-h-screen w-full bg-gradient-to-b from-black via-slate-900 to-black text-slate-100">
+    <div className="flex w-full h-full">
+      {/* Left Sidebar */}
+      <div className="w-64 border-r border-white/10 bg-black/40">
+        <StudioSidebar />
+      </div>
 
-      {/* Global Sidebar */}
-      <StudioSidebar />
-
-      {/* Main Content Area */}
-      <div className="ml-64 w-full px-8 py-10">
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
         <Topbar />
-        {children}
+        <div className="flex-1 overflow-y-auto p-6">
+          {children}
+        </div>
       </div>
     </div>
   );

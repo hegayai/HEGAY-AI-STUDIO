@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server";
-import { modelRouter } from "@/ai/modelRouter";
-import { systemPrompt } from "@/ai/prompts/systemPrompt";
+import { modelRouter } from "@/app/api/modelRouter";
+import { systemPrompt } from "@/app/ai/prompts/systemPrompt";
 
 export async function POST(req: Request) {
   try {
-    const { provider, model, prompt } = await req.json();
+    const { prompt, model } = await req.json();
 
-    if (!provider || !model || !prompt) {
+    if (!prompt || !model) {
       return NextResponse.json(
-        { error: "provider, model, and prompt are required." },
+        { error: "Missing prompt or model" },
         { status: 400 }
       );
     }
 
-    const response = await modelRouter(provider, model, systemPrompt, prompt);
-
-    return NextResponse.json({
-      output: response?.output ?? "No output returned.",
+    const result = await modelRouter({
+      prompt,
+      model,
+      systemPrompt,
     });
-  } catch (error) {
-    console.error("Model router API error:", error);
+
+    return NextResponse.json({ result });
+  } catch (err: any) {
     return NextResponse.json(
-      { error: "Model routing failed." },
+      { error: err.message || "Model router error" },
       { status: 500 }
     );
   }
