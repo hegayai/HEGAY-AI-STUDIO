@@ -1,11 +1,11 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function ImageForgePage() {
+export default function ImageEnginePage() {
   return (
     <EngineTemplate
-      title="AI Image Forge"
-      description="Generate posters, key art, thumbnails, character sheets, and cinematic visuals that rival and surpass Midjourney."
+      title="Image Engine"
+      description="Generate, enhance, stylize, and transform images using advanced creative tools."
     >
       <ModelTestPanel />
     </EngineTemplate>

@@ -1,11 +1,11 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function VoiceStudioPage() {
+export default function VoiceEnginePage() {
   return (
     <EngineTemplate
-      title="AI Voice Studio"
-      description="Create voice‑overs, character voices, gospel voices, and studio‑grade text‑to‑speech with audio enhancement."
+      title="Voice Engine"
+      description="Generate voice synthesis, vocal styles, and spoken‑word creative output."
     >
       <ModelTestPanel />
     </EngineTemplate>

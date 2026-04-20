@@ -1,13 +1,13 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function MusicStudioPage() {
+export default function MusicEnginePage() {
   return (
     <EngineTemplate
-      title="AI Music Studio"
-      description="Compose gospel, Afrobeats, scores, and full songs with vocals, harmonies, and mastering."
+      title="Music Engine"
+      description="Generate music, atmospheres, soundscapes, and audio compositions."
     >
-      <ModelTestPanel requiredTier="pro" />
+      <ModelTestPanel />
     </EngineTemplate>
   );
 }

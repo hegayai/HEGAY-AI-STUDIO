@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { modelRouter } from "@/app/api/modelRouter";
+import { modelRouter } from "@/app/ai/modelRouter";
 import { systemPrompt } from "@/app/ai/prompts/systemPrompt";
 
 export async function POST(req: Request) {

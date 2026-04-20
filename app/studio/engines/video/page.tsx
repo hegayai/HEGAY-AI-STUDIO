@@ -1,13 +1,13 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function VideoUniversePage() {
+export default function VideoEnginePage() {
   return (
     <EngineTemplate
-      title="AI Video Universe"
-      description="Generate cinematic video, long‑form scenes, character‑consistent shots, and motion‑aware sequences."
+      title="Video Engine"
+      description="Create cinematic sequences, motion styles, transitions, and full video compositions."
     >
-      <ModelTestPanel requiredTier="studio" />
+      <ModelTestPanel />
     </EngineTemplate>
   );
 }

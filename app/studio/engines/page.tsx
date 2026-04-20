@@ -62,7 +62,6 @@ export default function EnginesPage() {
 
   return (
     <div className="w-full p-8 space-y-12">
-      {/* Header */}
       <header className="space-y-4">
         <h1 className="text-4xl font-bold">Engines</h1>
         <p className="text-gray-400 max-w-2xl">
@@ -72,7 +71,6 @@ export default function EnginesPage() {
         </p>
       </header>
 
-      {/* Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {engines.map((engine) => (
           <EngineCard key={engine.title} {...engine} />
@@ -82,9 +80,6 @@ export default function EnginesPage() {
   );
 }
 
-/* ------------------------------
-   ENGINE CARD
------------------------------- */
 function EngineCard({
   title,
   description,

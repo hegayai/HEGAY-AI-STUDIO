@@ -1,5 +1,5 @@
 import { WorkflowDefinition, WorkflowResult, WorkflowStep } from "./types";
-import { modelRouter } from "@/app/api/modelRouter";
+import { modelRouter } from "@/app/ai/modelRouter";
 import { systemPrompt as defaultSystemPrompt } from "@/app/ai/prompts/systemPrompt";
 
 export async function runWorkflow(

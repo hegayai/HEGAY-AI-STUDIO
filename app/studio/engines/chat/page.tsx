@@ -1,10 +1,10 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function HegayChatPage() {
+export default function ChatEnginePage() {
   return (
     <EngineTemplate
-      title="Hegay Chat"
+      title="Hegay Chat Engine"
       description="A culturally aware, emotionally intelligent creative mind for scripts, strategy, and civilization‑level thinking."
     >
       <ModelTestPanel />

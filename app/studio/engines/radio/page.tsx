@@ -1,11 +1,11 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
-export default function RadioStationPage() {
+export default function RadioEnginePage() {
   return (
     <EngineTemplate
-      title="AI Radio Station"
-      description="Automate radio dramas, gospel segments, IDs, jingles, and soundscapes for a living broadcast universe."
+      title="Radio Engine"
+      description="Create broadcast‑style audio, voiceovers, and radio‑grade sound design."
     >
       <ModelTestPanel />
     </EngineTemplate>

@@ -1,11 +1,11 @@
-import EngineTemplate from "../pages";
+import EngineTemplate from "../EngineTemplate";
 import ModelTestPanel from "../../components/ModelTestPanel";
 
 export default function ScriptEnginePage() {
   return (
     <EngineTemplate
-      title="AI Script Engine"
-      description="Write drama, film scenes, gospel stories, radio plays, and lyrics with deep cultural and emotional intelligence."
+      title="Script Engine"
+      description="Generate scripts, dialogue, narrative structures, and story frameworks."
     >
       <ModelTestPanel />
     </EngineTemplate>
