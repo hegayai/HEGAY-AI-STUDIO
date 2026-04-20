@@ -1,0 +1,224 @@
+/* ---------------------------------------------------------
+   HEGAY OS SUPREME v4.0 — GLOBAL COSMIC NEUTRAL PREMIUM CSS
+   --------------------------------------------------------- */
+@import "../src/styles/hero.css";
+
+/* ROOT PALETTE — Cosmic Neutral Premium */
+:root {
+  --obsidian: #000000;
+  --deep-space: #0A0A0F;
+
+  --platinum: #EDEDED;
+  --diamond-white: rgba(255,255,255,0.85);
+  --glass-frost: rgba(255,255,255,0.06);
+
+  --cosmic-blue: #4A6BFF;
+  --deep-purple: #6B4AFF;
+  --royal-gold: #F4C45E;
+
+  --glow-blue: rgba(74,107,255,0.25);
+  --glow-purple: rgba(107,74,255,0.25);
+  --glow-gold: rgba(244,196,94,0.25);
+}
+
+/* ---------------------------------------------------------
+   GLOBAL RESET + TYPOGRAPHY
+   --------------------------------------------------------- */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+  color: var(--platinum);
+  background: radial-gradient(
+      circle at 50% 0%,
+      rgba(74,107,255,0.08),
+      transparent 60%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--deep-space),
+      var(--obsidian)
+    );
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+}
+
+/* Smooth scroll unless minimal motion is active */
+html:not(.minimal-motion) {
+  scroll-behavior: smooth;
+}
+
+/* ---------------------------------------------------------
+   MINIMAL MOTION MODE
+   --------------------------------------------------------- */
+
+html.minimal-motion * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html.minimal-motion .glow,
+html.minimal-motion .blur {
+  filter: none !important;
+  backdrop-filter: none !important;
+}
+
+/* ---------------------------------------------------------
+   PREMIUM GLASS PANELS
+   --------------------------------------------------------- */
+
+.glass-panel {
+  background: var(--glass-frost);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.85);
+  border-radius: 1rem;
+}
+
+/* ---------------------------------------------------------
+   DIAMOND-CUT GLOW SYSTEM
+   --------------------------------------------------------- */
+
+.diamond-glow {
+  box-shadow:
+    0 0 20px var(--glow-blue),
+    0 0 40px var(--glow-purple),
+    0 0 4px var(--diamond-white);
+}
+
+.diamond-hover:hover {
+  box-shadow:
+    0 0 25px var(--glow-blue),
+    0 0 60px var(--glow-purple),
+    0 0 6px var(--diamond-white);
+  transition: 0.3s ease;
+}
+
+/* ---------------------------------------------------------
+   PREMIUM BUTTON SYSTEM
+   --------------------------------------------------------- */
+
+.btn-primary {
+  background: var(--cosmic-blue);
+  color: black;
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+  transition: 0.25s ease;
+}
+
+.btn-primary:hover {
+  background: #5c7aff;
+}
+
+.btn-secondary {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--platinum);
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  transition: 0.25s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ---------------------------------------------------------
+   COSMIC CURSOR (Optimized)
+   --------------------------------------------------------- */
+
+.cosmic-cursor {
+  pointer-events: none;
+  position: fixed;
+  z-index: 9998;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--diamond-white), transparent 60%);
+  mix-blend-mode: screen;
+  transform: translate3d(-100px, -100px, 0);
+}
+
+/* ---------------------------------------------------------
+   HOLOGRAM PARTICLES
+   --------------------------------------------------------- */
+
+.hologram-particle {
+  pointer-events: none;
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--diamond-white), transparent 70%);
+  mix-blend-mode: screen;
+  animation: particleFade 0.5s ease-out forwards;
+}
+
+@keyframes particleFade {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.4); }
+}
+
+/* ---------------------------------------------------------
+   WORLD-SOUL AURA
+   --------------------------------------------------------- */
+
+.world-soul-aura {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  background: radial-gradient(
+    circle at center,
+    rgba(255,255,255,0.08),
+    transparent 65%
+  );
+  transition: opacity 1s ease, backdrop-filter 1s ease;
+}
+
+/* ---------------------------------------------------------
+   AMBIENT UNIVERSE LAYERS
+   --------------------------------------------------------- */
+
+.universe-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  opacity: 0.25;
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: screen;
+}
+
+/* ---------------------------------------------------------
+   FADE + SCALE ANIMATIONS
+   --------------------------------------------------------- */
+
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scale-in {
+  animation: scaleIn 0.6s ease forwards;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ---------------------------------------------------------
+   END OF HEGAY OS SUPREME v4.0 GLOBAL CSS
+   --------------------------------------------------------- */

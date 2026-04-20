@@ -1,0 +1,152 @@
+"use client";
+
+import { useState } from "react";
+import EngineCore from "@/app/components/ui/EngineCore";
+import EnginePanel from "@/app/components/ui/EnginePanel";
+import EngineOutput from "@/app/components/ui/EngineOutput";
+
+export default function SymbolismEnginePage() {
+  const [prompt, setPrompt] = useState("");
+  const [symbolType, setSymbolType] = useState("Sigil");
+  const [style, setStyle] = useState("Mythic");
+  const [meaningDepth, setMeaningDepth] = useState("Layered");
+  const [loading, setLoading] = useState(false);
+  const [output, setOutput] = useState("");
+
+  async function handleGenerate() {
+    if (!prompt.trim()) return;
+    setLoading(true);
+
+    // 🔮 Placeholder for real symbolism generation API
+    await new Promise((r) => setTimeout(r, 1500));
+
+    setOutput(
+`Generated Symbolism (Mock)
+
+Symbol Type: ${symbolType}
+Style: ${style}
+Meaning Depth: ${meaningDepth}
+
+Prompt:
+${prompt}
+
+This is placeholder metadata representing the generated symbol, motif, or cultural iconography.`
+    );
+
+    setLoading(false);
+  }
+
+  return (
+    <EngineCore
+      title="Symbolism Engine"
+      description="Create symbols, sigils, emblems, mythic motifs, and cultural iconography."
+      aura="from-red-500/20 to-orange-500/20"
+      left={
+        <EnginePanel>
+          {/* Prompt */}
+          <div>
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Symbol Description
+            </label>
+            <textarea
+              placeholder="Describe the symbol: divine sigil, cultural emblem, mythic motif, ancestral mark..."
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100 h-28 outline-none"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </div>
+
+          {/* Symbol Type */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Symbol Type
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={symbolType}
+              onChange={(e) => setSymbolType(e.target.value)}
+            >
+              <option>Sigil</option>
+              <option>Emblem</option>
+              <option>Motif</option>
+              <option>Glyph</option>
+              <option>Totemic Mark</option>
+              <option>Custom Symbol</option>
+            </select>
+          </div>
+
+          {/* Style */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Style
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={style}
+              onChange={(e) => setStyle(e.target.value)}
+            >
+              <option>Mythic</option>
+              <option>Ancient</option>
+              <option>Cosmic</option>
+              <option>Minimal</option>
+              <option>Ornate</option>
+              <option>Geometric</option>
+            </select>
+          </div>
+
+          {/* Meaning Depth */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Meaning Depth
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={meaningDepth}
+              onChange={(e) => setMeaningDepth(e.target.value)}
+            >
+              <option>Simple</option>
+              <option>Layered</option>
+              <option>Multi-Symbolic</option>
+              <option>Esoteric</option>
+              <option>Prophetic</option>
+            </select>
+          </div>
+
+          {/* Button */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !prompt.trim()}
+            className="mt-3 rounded-lg border border-orange-400/60 bg-orange-500/30 px-4 py-2 text-xs text-orange-50 transition hover:bg-orange-500/50 disabled:opacity-40"
+          >
+            {loading ? "Forging Symbol…" : "Generate Symbol"}
+          </button>
+        </EnginePanel>
+      }
+      right={
+        <EngineOutput>
+          {/* Loading */}
+          {loading && (
+            <div className="flex flex-col items-center gap-2 text-xs text-slate-300">
+              <div className="h-10 w-10 animate-spin rounded-full border border-orange-400/40 border-t-transparent" />
+              <p>Forging mythic motif…</p>
+            </div>
+          )}
+
+          {/* Output */}
+          {!loading && output && (
+            <pre className="text-xs text-slate-200 whitespace-pre-line bg-white/5 border border-white/10 rounded-lg p-3">
+              {output}
+            </pre>
+          )}
+
+          {/* Empty */}
+          {!loading && !output && (
+            <p className="text-xs text-slate-500 text-center px-4">
+              Describe a symbol to generate its mythic blueprint.
+            </p>
+          )}
+        </EngineOutput>
+      }
+    />
+  );
+}

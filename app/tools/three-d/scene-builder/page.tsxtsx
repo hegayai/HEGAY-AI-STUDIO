@@ -1,0 +1,151 @@
+"use client";
+
+import { useState } from "react";
+import EngineCore from "@/app/components/ui/EngineCore";
+import EnginePanel from "@/app/components/ui/EnginePanel";
+import EngineOutput from "@/app/components/ui/EngineOutput";
+
+export default function SceneBuilderPage() {
+  const [prompt, setPrompt] = useState("");
+  const [layout, setLayout] = useState("Open Space");
+  const [camera, setCamera] = useState("Cinematic");
+  const [complexity, setComplexity] = useState("Medium");
+  const [loading, setLoading] = useState(false);
+  const [output, setOutput] = useState("");
+
+  async function handleGenerate() {
+    if (!prompt.trim()) return;
+    setLoading(true);
+
+    // 🔮 Placeholder for real scene generation API
+    await new Promise((r) => setTimeout(r, 1500));
+
+    setOutput(
+`Generated Scene Blueprint (Mock)
+
+Layout: ${layout}
+Camera: ${camera}
+Complexity: ${complexity}
+
+Prompt:
+${prompt}
+
+This is placeholder metadata representing the generated 3D scene structure.`
+    );
+
+    setLoading(false);
+  }
+
+  return (
+    <EngineCore
+      title="Scene Builder"
+      description="Assemble 3D scenes, object placement, spatial layouts, and world geometry."
+      aura="from-blue-500/20 to-cyan-500/20"
+      left={
+        <EnginePanel>
+          {/* Prompt */}
+          <div>
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Scene Description
+            </label>
+            <textarea
+              placeholder="Describe the scene: forest clearing, sci-fi hangar, medieval village, interior room..."
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100 h-28 outline-none"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </div>
+
+          {/* Layout */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Layout Type
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={layout}
+              onChange={(e) => setLayout(e.target.value)}
+            >
+              <option>Open Space</option>
+              <option>Dense Environment</option>
+              <option>Interior Room</option>
+              <option>Landscape</option>
+              <option>Urban Layout</option>
+              <option>Abstract Composition</option>
+            </select>
+          </div>
+
+          {/* Camera */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Camera Style
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={camera}
+              onChange={(e) => setCamera(e.target.value)}
+            >
+              <option>Cinematic</option>
+              <option>Orthographic</option>
+              <option>First-Person</option>
+              <option>Third-Person</option>
+              <option>Top-Down</option>
+              <option>Isometric</option>
+            </select>
+          </div>
+
+          {/* Complexity */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Scene Complexity
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={complexity}
+              onChange={(e) => setComplexity(e.target.value)}
+            >
+              <option>Low</option>
+              <option>Medium</option>
+              <option>High</option>
+              <option>Extreme</option>
+            </select>
+          </div>
+
+          {/* Button */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !prompt.trim()}
+            className="mt-3 rounded-lg border border-cyan-400/60 bg-cyan-500/30 px-4 py-2 text-xs text-cyan-50 transition hover:bg-cyan-500/50 disabled:opacity-40"
+          >
+            {loading ? "Building Scene…" : "Generate Scene"}
+          </button>
+        </EnginePanel>
+      }
+      right={
+        <EngineOutput>
+          {/* Loading */}
+          {loading && (
+            <div className="flex flex-col items-center gap-2 text-xs text-slate-300">
+              <div className="h-10 w-10 animate-spin rounded-full border border-cyan-400/40 border-t-transparent" />
+              <p>Assembling spatial layout…</p>
+            </div>
+          )}
+
+          {/* Output */}
+          {!loading && output && (
+            <pre className="text-xs text-slate-200 whitespace-pre-line bg-white/5 border border-white/10 rounded-lg p-3">
+              {output}
+            </pre>
+          )}
+
+          {/* Empty */}
+          {!loading && !output && (
+            <p className="text-xs text-slate-500 text-center px-4">
+              Describe a scene to generate its spatial blueprint.
+            </p>
+          )}
+        </EngineOutput>
+      }
+    />
+  );
+}

@@ -1,0 +1,153 @@
+"use client";
+
+import { useState } from "react";
+import EngineCore from "@/app/components/ui/EngineCore";
+import EnginePanel from "@/app/components/ui/EnginePanel";
+import EngineOutput from "@/app/components/ui/EngineOutput";
+
+export default function LoreEnginePage() {
+  const [prompt, setPrompt] = useState("");
+  const [tone, setTone] = useState("Epic");
+  const [era, setEra] = useState("Ancient Age");
+  const [structure, setStructure] = useState("Chronicle");
+  const [loading, setLoading] = useState(false);
+  const [output, setOutput] = useState("");
+
+  async function handleGenerate() {
+    if (!prompt.trim()) return;
+    setLoading(true);
+
+    // 🔮 Placeholder for real lore generation API
+    await new Promise((r) => setTimeout(r, 1500));
+
+    setOutput(
+`Generated Lore (Mock)
+
+Tone: ${tone}
+Era: ${era}
+Structure: ${structure}
+
+Prompt:
+${prompt}
+
+This is placeholder metadata representing the generated mythic lore and cosmology.`
+    );
+
+    setLoading(false);
+  }
+
+  return (
+    <EngineCore
+      title="Lore Engine"
+      description="Generate mythic histories, world lore, cosmology, and cultural narratives."
+      aura="from-purple-600/20 to-violet-500/20"
+      left={
+        <EnginePanel>
+          {/* Prompt */}
+          <div>
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Lore Description
+            </label>
+            <textarea
+              placeholder="Describe the lore: creation myth, ancient war, lost civilization, cosmic origin..."
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100 h-28 outline-none"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </div>
+
+          {/* Tone */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Tone
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+            >
+              <option>Epic</option>
+              <option>Mystical</option>
+              <option>Dark</option>
+              <option>Heroic</option>
+              <option>Tragic</option>
+              <option>Scholarly</option>
+            </select>
+          </div>
+
+          {/* Era */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Era
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={era}
+              onChange={(e) => setEra(e.target.value)}
+            >
+              <option>Ancient Age</option>
+              <option>Mythic Dawn</option>
+              <option>Golden Age</option>
+              <option>Shadow Age</option>
+              <option>Modern Era</option>
+              <option>Future Epoch</option>
+            </select>
+          </div>
+
+          {/* Structure */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Narrative Structure
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={structure}
+              onChange={(e) => setStructure(e.target.value)}
+            >
+              <option>Chronicle</option>
+              <option>Epic Poem</option>
+              <option>Mythic Fragment</option>
+              <option>Prophecy</option>
+              <option>Oral Tradition</option>
+              <option>Codex Entry</option>
+            </select>
+          </div>
+
+          {/* Button */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !prompt.trim()}
+            className="mt-3 rounded-lg border border-violet-400/60 bg-violet-500/30 px-4 py-2 text-xs text-violet-50 transition hover:bg-violet-500/50 disabled:opacity-40"
+          >
+            {loading ? "Weaving Lore…" : "Generate Lore"}
+          </button>
+        </EnginePanel>
+      }
+      right={
+        <EngineOutput>
+          {/* Loading */}
+          {loading && (
+            <div className="flex flex-col items-center gap-2 text-xs text-slate-300">
+              <div className="h-10 w-10 animate-spin rounded-full border border-violet-400/40 border-t-transparent" />
+              <p>Weaving mythic history…</p>
+            </div>
+          )}
+
+          {/* Output */}
+          {!loading && output && (
+            <pre className="text-xs text-slate-200 whitespace-pre-line bg-white/5 border border-white/10 rounded-lg p-3">
+              {output}
+            </pre>
+          )}
+
+          {/* Empty */}
+          {!loading && !output && (
+            <p className="text-xs text-slate-500 text-center px-4">
+              Describe lore to generate its mythic blueprint.
+            </p>
+          )}
+        </EngineOutput>
+      }
+    />
+  );
+}

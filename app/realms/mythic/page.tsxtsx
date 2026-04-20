@@ -1,0 +1,60 @@
+"use client";
+
+import ToolCard from "@/app/components/ui/ToolCard";
+import RealmToolPanel from "@/app/components/ui/RealmToolPanel";
+
+export default function MythicRealmPage() {
+  return (
+    <RealmToolPanel
+      title="Mythic Realm"
+      description="Engines for lore systems, pantheon logic, myth-generation, archetypes, symbolism, and world-soul architecture."
+      aura="from-purple-600/20 to-fuchsia-500/20"
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <ToolCard
+          title="Lore Engine"
+          description="Generate mythic histories, world lore, cosmology, and cultural narratives."
+          href="/tools/mythic/lore-engine"
+          aura="from-purple-600/30 to-violet-500/30"
+        />
+
+        <ToolCard
+          title="Pantheon Engine"
+          description="Create gods, deities, ancestral forces, and divine hierarchy systems."
+          href="/tools/mythic/pantheon-engine"
+          aura="from-violet-500/30 to-fuchsia-500/30"
+        />
+
+        <ToolCard
+          title="Myth Generator"
+          description="Generate myths, legends, origin stories, and cultural epics."
+          href="/tools/mythic/myth-generator"
+          aura="from-fuchsia-500/30 to-pink-500/30"
+        />
+
+        <ToolCard
+          title="Archetype Engine"
+          description="Define archetypes, roles, character essences, and mythic identities."
+          href="/tools/mythic/archetype-engine"
+          aura="from-pink-500/30 to-rose-500/30"
+        />
+
+        <ToolCard
+          title="World-Soul Engine"
+          description="Generate spiritual laws, emotional physics, and civilization soul logic."
+          href="/tools/mythic/world-soul-engine"
+          aura="from-rose-500/30 to-red-500/30"
+        />
+
+        <ToolCard
+          title="Symbolism Engine"
+          description="Create symbols, sigils, emblems, mythic motifs, and cultural iconography."
+          href="/tools/mythic/symbolism-engine"
+          aura="from-red-500/30 to-orange-500/30"
+        />
+
+      </div>
+    </RealmToolPanel>
+  );
+}

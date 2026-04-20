@@ -1,0 +1,25 @@
+/* Base theme shift wrapper */
+.theme-normal {
+  --bg-start: #000000;
+  --bg-mid: #1a1a1a;
+  --bg-end: #000000;
+  --panel-bg: rgba(20, 20, 20, 0.6);
+  --panel-border: rgba(80, 80, 80, 0.6);
+  --text-main: #ffffff;
+  --text-soft: #bbbbbb;
+}
+
+.theme-containment {
+  --bg-start: #120012;
+  --bg-mid: #2a0033;
+  --bg-end: #0a0010;
+  --panel-bg: rgba(60, 0, 80, 0.45);
+  --panel-border: rgba(180, 0, 255, 0.4);
+  --text-main: #e9d5ff;
+  --text-soft: #c084fc;
+}
+
+/* Smooth transition */
+.theme-transition {
+  transition: all 0.8s ease;
+}

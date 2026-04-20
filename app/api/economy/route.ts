@@ -1,0 +1,10 @@
+import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  const body = await req.json();
+
+  return NextResponse.json({
+    input: body.input,
+    result: "Mock economic data generated.",
+  });
+}

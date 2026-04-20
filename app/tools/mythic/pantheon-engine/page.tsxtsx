@@ -1,0 +1,152 @@
+"use client";
+
+import { useState } from "react";
+import EngineCore from "@/app/components/ui/EngineCore";
+import EnginePanel from "@/app/components/ui/EnginePanel";
+import EngineOutput from "@/app/components/ui/EngineOutput";
+
+export default function PantheonEnginePage() {
+  const [prompt, setPrompt] = useState("");
+  const [structure, setStructure] = useState("Hierarchical");
+  const [tone, setTone] = useState("Mythic");
+  const [divinityType, setDivinityType] = useState("Gods & Deities");
+  const [loading, setLoading] = useState(false);
+  const [output, setOutput] = useState("");
+
+  async function handleGenerate() {
+    if (!prompt.trim()) return;
+    setLoading(true);
+
+    // 🔮 Placeholder for real pantheon generation API
+    await new Promise((r) => setTimeout(r, 1500));
+
+    setOutput(
+`Generated Pantheon (Mock)
+
+Pantheon Structure: ${structure}
+Tone: ${tone}
+Divinity Type: ${divinityType}
+
+Prompt:
+${prompt}
+
+This is placeholder metadata representing the generated pantheon, divine hierarchy, and spiritual logic.`
+    );
+
+    setLoading(false);
+  }
+
+  return (
+    <EngineCore
+      title="Pantheon Engine"
+      description="Create gods, deities, ancestral forces, and divine hierarchy systems."
+      aura="from-violet-600/20 to-fuchsia-500/20"
+      left={
+        <EnginePanel>
+          {/* Prompt */}
+          <div>
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Pantheon Description
+            </label>
+            <textarea
+              placeholder="Describe the pantheon: creator gods, elemental spirits, ancestral guardians, cosmic rulers..."
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100 h-28 outline-none"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+          </div>
+
+          {/* Structure */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Pantheon Structure
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={structure}
+              onChange={(e) => setStructure(e.target.value)}
+            >
+              <option>Hierarchical</option>
+              <option>Elemental</option>
+              <option>Ancestral</option>
+              <option>Dualistic</option>
+              <option>Cosmic Order</option>
+              <option>Distributed</option>
+            </select>
+          </div>
+
+          {/* Tone */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Tone
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={tone}
+              onChange={(e) => setTone(e.target.value)}
+            >
+              <option>Mythic</option>
+              <option>Dark</option>
+              <option>Heroic</option>
+              <option>Mystical</option>
+              <option>Cosmic</option>
+              <option>Scholarly</option>
+            </select>
+          </div>
+
+          {/* Divinity Type */}
+          <div className="mt-3">
+            <label className="text-[0.7rem] uppercase tracking-[0.18em] text-slate-400">
+              Divinity Type
+            </label>
+            <select
+              className="mt-1 w-full rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-xs text-slate-100"
+              value={divinityType}
+              onChange={(e) => setDivinityType(e.target.value)}
+            >
+              <option>Gods & Deities</option>
+              <option>Elemental Spirits</option>
+              <option>Ancestral Forces</option>
+              <option>Cosmic Entities</option>
+              <option>Hybrid Pantheon</option>
+            </select>
+          </div>
+
+          {/* Button */}
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !prompt.trim()}
+            className="mt-3 rounded-lg border border-fuchsia-400/60 bg-fuchsia-500/30 px-4 py-2 text-xs text-fuchsia-50 transition hover:bg-fuchsia-500/50 disabled:opacity-40"
+          >
+            {loading ? "Forging Pantheon…" : "Generate Pantheon"}
+          </button>
+        </EnginePanel>
+      }
+      right={
+        <EngineOutput>
+          {/* Loading */}
+          {loading && (
+            <div className="flex flex-col items-center gap-2 text-xs text-slate-300">
+              <div className="h-10 w-10 animate-spin rounded-full border border-fuchsia-400/40 border-t-transparent" />
+              <p>Forging divine hierarchy…</p>
+            </div>
+          )}
+
+          {/* Output */}
+          {!loading && output && (
+            <pre className="text-xs text-slate-200 whitespace-pre-line bg-white/5 border border-white/10 rounded-lg p-3">
+              {output}
+            </pre>
+          )}
+
+          {/* Empty */}
+          {!loading && !output && (
+            <p className="text-xs text-slate-500 text-center px-4">
+              Describe a pantheon to generate its divine blueprint.
+            </p>
+          )}
+        </EngineOutput>
+      }
+    />
+  );
+}

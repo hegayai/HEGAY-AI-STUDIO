@@ -1,0 +1,37 @@
+/* PARTICLE LAYER 1 – SHARP PARTICLES */
+.hero-particles {
+  background-image: url("/hero/particles.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.35;
+  animation: particlesFloat 32s linear infinite;
+}
+
+/* PARTICLE LAYER 2 – DEPTH / BOKEH PARTICLES */
+.hero-particles-depth {
+  background-image: url("/hero/particles-depth.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  filter: blur(2px);
+  animation: particlesDepthFloat 28s linear infinite;
+}
+
+/* ANIMATIONS */
+@keyframes particlesFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  100% {
+    transform: translateY(-60px) scale(1.03);
+  }
+}
+
+@keyframes particlesDepthFloat {
+  0% {
+    transform: translateY(0px) scale(1);
+  }
+  100% {
+    transform: translateY(-80px) scale(1.05);
+  }
+}
