@@ -13,8 +13,8 @@ export async function POST(req: Request) {
       );
     }
 
-    // Process message through your custom router
-    const reply = await hegayRouter.process(message);
+    // Process message through your custom router (direct function call)
+    const reply = await hegayRouter(message);
 
     // Save chat message + reply
     const saved = await prisma.chat.create({
