@@ -147,7 +147,19 @@ export default function CivilizationDetailPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function SummaryCard({ icon: Icon, label, value, description }) {
+type SummaryCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  description: string;
+};
+
+function SummaryCard({
+  icon: Icon,
+  label,
+  value,
+  description,
+}: SummaryCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-4 space-y-1">
       <div className="flex items-center gap-3">
@@ -164,7 +176,12 @@ function SummaryCard({ icon: Icon, label, value, description }) {
   );
 }
 
-function InfluenceCard({ name, level }) {
+type InfluenceCardProps = {
+  name: string;
+  level: string;
+};
+
+function InfluenceCard({ name, level }: InfluenceCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-4 space-y-1">
       <div className="text-sm font-semibold text-slate-100">{name}</div>
@@ -174,7 +191,11 @@ function InfluenceCard({ name, level }) {
   );
 }
 
-function LawRow({ name }) {
+type LawRowProps = {
+  name: string;
+};
+
+function LawRow({ name }: LawRowProps) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/60 px-4 py-3">
       <div className="text-sm text-slate-100">{name}</div>
@@ -183,7 +204,12 @@ function LawRow({ name }) {
   );
 }
 
-function TimelineEvent({ title, time }) {
+type TimelineEventProps = {
+  title: string;
+  time: string;
+};
+
+function TimelineEvent({ title, time }: TimelineEventProps) {
   return (
     <div className="relative pl-10">
       <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#F5D48A55] to-transparent" />

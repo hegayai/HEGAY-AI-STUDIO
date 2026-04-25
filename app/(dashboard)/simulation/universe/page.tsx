@@ -35,8 +35,14 @@ export default function UniverseSimulationPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <ControlBlock label="Speed" options={["0.5x", "1x", "2x", "4x"]} />
-          <ControlBlock label="Focus Layer" options={["Realms", "Civilizations", "Pantheon", "Origin Laws"]} />
-          <ControlBlock label="View Mode" options={["Map", "Graph", "Energy Field", "Timeline"]} />
+          <ControlBlock
+            label="Focus Layer"
+            options={["Realms", "Civilizations", "Pantheon", "Origin Laws"]}
+          />
+          <ControlBlock
+            label="View Mode"
+            options={["Map", "Graph", "Energy Field", "Timeline"]}
+          />
         </div>
 
         <div className="flex items-center gap-3 pt-2">
@@ -115,7 +121,12 @@ export default function UniverseSimulationPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function ControlBlock({ label, options }) {
+type ControlBlockProps = {
+  label: string;
+  options: string[];
+};
+
+function ControlBlock({ label, options }: ControlBlockProps) {
   return (
     <div className="space-y-2">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
@@ -130,7 +141,14 @@ function ControlBlock({ label, options }) {
   );
 }
 
-function MetricCard({ icon: Icon, label, value, description }) {
+type MetricCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  description: string;
+};
+
+function MetricCard({ icon: Icon, label, value, description }: MetricCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-4 space-y-1">
       <div className="flex items-center gap-3">
@@ -166,6 +184,10 @@ function SimDots() {
   );
 }
 
+type NodeProps = {
+  className?: string;
+};
+
 function SimNodes() {
   return (
     <div className="relative w-full h-full">
@@ -178,7 +200,7 @@ function SimNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: NodeProps) {
   return (
     <div
       className={`absolute h-7 w-7 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_30px_rgba(36,58,107,0.8)] ${className}`}

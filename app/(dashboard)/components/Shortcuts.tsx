@@ -7,7 +7,7 @@ export default function Shortcuts() {
   const router = useRouter();
 
   useEffect(() => {
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       // Realm jumps
       if (e.altKey && e.key === "1") router.push("/dashboard");
       if (e.altKey && e.key === "2") router.push("/aesthetic");
@@ -35,7 +35,7 @@ export default function Shortcuts() {
         document.dispatchEvent(new Event("toggle-launcher"));
       }
 
-      // Notification Center (Ctrl + N)
+      // Notification Center
       if (e.ctrlKey && e.key.toLowerCase() === "n") {
         document.dispatchEvent(new Event("toggle-notifications"));
       }

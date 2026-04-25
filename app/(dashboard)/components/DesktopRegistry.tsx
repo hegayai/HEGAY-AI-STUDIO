@@ -1,56 +1,51 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const DesktopContext = createContext(null);
+/* ───────────────── TYPES ───────────────── */
 
-export function DesktopProvider({ children }) {
-  const [items, setItems] = useState([
-    {
-      id: "origin",
-      label: "Origin Realm",
-      type: "realm",
-      path: "/dashboard",
-    },
-    {
-      id: "aesthetic",
-      label: "Aesthetic Realm",
-      type: "realm",
-      path: "/aesthetic",
-    },
-    {
-      id: "avatar",
-      label: "Avatar Realm",
-      type: "realm",
-      path: "/avatar",
-    },
-    {
-      id: "mood",
-      label: "Mood Realm",
-      type: "realm",
-      path: "/mood",
-    },
-    {
-      id: "dream",
-      label: "Dream Realm",
-      type: "realm",
-      path: "/dream",
-    },
-    {
-      id: "origin-ritual",
-      label: "Run Origin Ritual",
-      type: "ritual",
-      action: "origin-creation",
-    },
-  ]);
+type DesktopItem = {
+  id: string;
+  label: string;
+  type: "realm" | "ritual";
+  path?: string;
+  action?: string;
+};
+
+type DesktopContextType = {
+  items: DesktopItem[];
+  registerItem: (item: DesktopItem) => void;
+};
+
+/* ───────────────── CONTEXT ───────────────── */
+
+const DesktopContext = createContext<DesktopContextType | null>(null);
+
+/* ───────────────── PROVIDER ───────────────── */
+
+export function DesktopProvider({ children }: { children: React.ReactNode }) {
+  const [items, setItems] = useState<DesktopItem[]>([]);
+
+  function registerItem(item: DesktopItem) {
+    setItems((prev) => {
+      if (prev.some((i) => i.id === item.id)) return prev;
+      return [...prev, item];
+    });
+  }
 
   return (
-    <DesktopContext.Provider value={{ items }}>
+    <DesktopContext.Provider value={{ items, registerItem }}>
       {children}
     </DesktopContext.Provider>
   );
 }
 
+/* ───────────────── HOOK ───────────────── */
+
 export function useDesktop() {
-  return useContext(DesktopContext);
+  const ctx = useContext(DesktopContext);
+  if (!ctx) {
+    throw new Error("useDesktop must be used inside a DesktopProvider");
+  }
+  return ctx;
 }

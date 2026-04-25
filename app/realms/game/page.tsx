@@ -1,60 +1,39 @@
 "use client";
 
-import ToolCard from "@/app/components/ui/ToolCard";
+import RealmIntro from "@/app/components/ui/RealmIntro";
 import RealmToolPanel from "@/app/components/ui/RealmToolPanel";
 
 export default function GameRealmPage() {
   return (
-    <RealmToolPanel
-      title="Game Realm"
-      description="Engines for gameplay systems, physics, interactions, AI agents, loops, and state logic."
-      aura="from-rose-500/20 to-orange-500/20"
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <main className="space-y-8">
+      <RealmIntro
+        title="Game Realm"
+        description="The interactive systems engine of your Creative OS — gameplay loops, mechanics, agents, and progression models."
+        aura="from-yellow-500/40 to-orange-500/40"
+      />
 
-        <ToolCard
-          title="Gameplay Engine"
-          description="Generate gameplay systems, mechanics, rules, and interactive logic."
-          href="/tools/game/gameplay-engine"
-          aura="from-rose-500/30 to-pink-500/30"
-        />
-
-        <ToolCard
-          title="Physics Engine"
-          description="Create physics rules, collision systems, forces, and movement logic."
-          href="/tools/game/physics-engine"
-          aura="from-pink-500/30 to-orange-500/30"
-        />
-
-        <ToolCard
-          title="Interaction Engine"
-          description="Define interactions, triggers, events, and player-object behaviors."
-          href="/tools/game/interaction-engine"
-          aura="from-orange-500/30 to-amber-500/30"
-        />
-
-        <ToolCard
-          title="AI Agent Engine"
-          description="Generate AI behaviors, decision trees, pathfinding, and agent logic."
-          href="/tools/game/ai-agent-engine"
-          aura="from-amber-500/30 to-yellow-500/30"
-        />
-
-        <ToolCard
-          title="Game Loop Engine"
-          description="Create update loops, tick systems, frame logic, and runtime cycles."
-          href="/tools/game/game-loop-engine"
-          aura="from-yellow-500/30 to-lime-500/30"
-        />
-
-        <ToolCard
-          title="State Machine Engine"
-          description="Generate state machines, transitions, conditions, and flow logic."
-          href="/tools/game/state-machine-engine"
-          aura="from-lime-500/30 to-green-500/30"
-        />
-
-      </div>
-    </RealmToolPanel>
+      <RealmToolPanel
+        title="Game Tools"
+        description="Tools for building gameplay systems, AI agents, and interactive mechanics."
+        aura="from-yellow-500/20 to-orange-500/20"
+        tools={[
+          {
+            title: "Gameplay Engine",
+            description: "Design mechanics, rules, and player interactions.",
+            aura: "from-yellow-500/20 to-orange-500/20",
+          },
+          {
+            title: "AI Agent Engine",
+            description: "Generate NPC behaviors, decision trees, and logic.",
+            aura: "from-orange-500/20 to-red-500/20",
+          },
+          {
+            title: "State Machine Engine",
+            description: "Model game states, transitions, and triggers.",
+            aura: "from-red-500/20 to-rose-500/20",
+          },
+        ]}
+      />
+    </main>
   );
 }

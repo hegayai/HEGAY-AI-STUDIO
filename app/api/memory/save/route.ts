@@ -1,35 +1,39 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/core/db/client";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { userId, key, value } = await req.json();
+    const user = await getCurrentUser();
 
-    if (!userId || !key || typeof value === "undefined") {
+    if (!user) {
       return NextResponse.json(
-        { error: "Missing userId, key, or value" },
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { content, type } = await req.json();
+
+    if (!content || !type) {
+      return NextResponse.json(
+        { error: "Missing memory content or type" },
         { status: 400 }
       );
     }
 
-    const saved = await prisma.memory.upsert({
-      where: {
-        userId_key: {
-          userId,
-          key,
-        },
-      },
-      update: {
-        value,
-      },
-      create: {
-        userId,
-        key,
-        value,
+    const saved = await prisma.memory.create({
+      data: {
+        userId: user.id,
+        content,
+        type,
       },
     });
 
-    return NextResponse.json({ saved });
+    return NextResponse.json({
+      success: true,
+      memory: saved,
+    });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Failed to save memory" },

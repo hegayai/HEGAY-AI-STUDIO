@@ -1,4 +1,3 @@
-// app/api/video/generate/route.ts
 import { NextResponse } from "next/server";
 import {
   getCurrentUser,
@@ -6,6 +5,7 @@ import {
   canGenerateVideo,
   validateVideoDuration,
 } from "@/lib/auth";
+import { prisma } from "@/core/db/client";
 
 const FAL_KEY = process.env.FAL_KEY;
 
@@ -23,11 +23,15 @@ export async function POST(req: Request) {
     const { prompt, seconds } = await req.json();
 
     if (!prompt || typeof prompt !== "string") {
-      return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Prompt is required" },
+        { status: 400 }
+      );
     }
 
     const duration = Number(seconds) || 6;
 
+    // PLAN DURATION CHECK
     if (!validateVideoDuration(user.planId as any, duration)) {
       return NextResponse.json(
         { error: "Video duration exceeds your plan limit" },
@@ -35,6 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
+    // DAILY USAGE CHECK
     const usage = await getTodayUsage(user.id);
     if (!canGenerateVideo(user.planId as any, usage)) {
       return NextResponse.json(
@@ -43,7 +48,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Example Fal.ai video endpoint (replace with chosen model)
+    // CALL FAL.AI VIDEO MODEL
     const response = await fetch("https://fal.run/fal-ai/luma-dream-machine", {
       method: "POST",
       headers: {
@@ -52,7 +57,7 @@ export async function POST(req: Request) {
       },
       body: JSON.stringify({
         prompt,
-        duration, // if model supports it
+        duration,
       }),
     });
 
@@ -65,13 +70,32 @@ export async function POST(req: Request) {
       );
     }
 
-    // increment usage
-    // usage.videosUsed += 1; save to DB
+    // SAVE MEDIA TO DB
+    await prisma.media.create({
+      data: {
+        userId: user.id,
+        type: "video",
+        url: result.video_url,
+        title: prompt.slice(0, 120),
+      },
+    });
 
-    return NextResponse.json({ url: result.video_url });
+    // INCREMENT USAGE
+    await prisma.usage.update({
+      where: { id: usage.id },
+      data: { videosUsed: usage.videosUsed + 1 },
+    });
+
+    return NextResponse.json({
+      success: true,
+      url: result.video_url,
+    });
   } catch (error) {
     return NextResponse.json(
-      { error: "Fal.ai video generation error", details: String(error) },
+      {
+        error: "Fal.ai video generation error",
+        details: String(error),
+      },
       { status: 500 }
     );
   }

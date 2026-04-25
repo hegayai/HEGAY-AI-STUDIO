@@ -128,18 +128,27 @@ export default function SystemIntelligenceEnginePage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function OutputBlock({ title }) {
+function OutputBlock({ title }: { title: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-3 space-y-1">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
         {title}
       </div>
-      <div className="text-sm text-slate-300">Generated insight will appear here.</div>
+      <div className="text-sm text-slate-300">
+        Generated insight will appear here.
+      </div>
     </div>
   );
 }
 
-function MetricCard({ icon: Icon, label, value, description }) {
+type MetricCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  description: string;
+};
+
+function MetricCard({ icon: Icon, label, value, description }: MetricCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-4 space-y-1">
       <div className="flex items-center gap-3">
@@ -187,7 +196,7 @@ function IntelligenceNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: { className: string }) {
   return (
     <div
       className={`absolute h-6 w-6 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_20px_rgba(36,58,107,0.8)] ${className}`}

@@ -3,13 +3,35 @@
 import { useTabs } from "./TabManager";
 import { useWindows } from "./WindowManager";
 
+type RunningTab = {
+  type: "tab";
+  title: string;
+  path: string;
+};
+
+type RunningWindow = {
+  type: "window";
+  title: string;
+  id: string;
+};
+
+type RunningApp = RunningTab | RunningWindow;
+
 export default function Taskbar() {
   const { tabs, active, switchTab } = useTabs();
   const { windows } = useWindows();
 
-  const runningApps = [
-    ...tabs.map((t) => ({ type: "tab", title: t.title, path: t.path })),
-    ...windows.map((w) => ({ type: "window", title: w.title, id: w.id })),
+  const runningApps: RunningApp[] = [
+    ...tabs.map((t) => ({
+      type: "tab" as const,
+      title: t.title,
+      path: t.path,
+    })),
+    ...windows.map((w) => ({
+      type: "window" as const,
+      title: w.title,
+      id: w.id,
+    })),
   ];
 
   return (

@@ -14,6 +14,32 @@ import {
   Cpu,
 } from "lucide-react";
 
+/* ───────────────── TYPES ───────────────── */
+
+type ConsoleCardProps = {
+  title: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  color: string;
+};
+
+type StatusCardProps = {
+  label: string;
+  value: string;
+  icon: React.ComponentType<any>;
+};
+
+type DirectiveRowProps = {
+  label: string;
+  description: string;
+};
+
+type NodeProps = {
+  className?: string;
+};
+
+/* ───────────────── PAGE ───────────────── */
+
 export default function AscensionConsolePage() {
   return (
     <main className="px-8 py-10 space-y-12">
@@ -137,7 +163,7 @@ export default function AscensionConsolePage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function ConsoleCard({ title, description, icon: Icon, color }) {
+function ConsoleCard({ title, description, icon: Icon, color }: ConsoleCardProps) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/70 p-5 flex flex-col gap-3">
       <div className={`absolute inset-0 opacity-40 bg-gradient-to-br ${color} blur-3xl`} />
@@ -156,7 +182,7 @@ function ConsoleCard({ title, description, icon: Icon, color }) {
   );
 }
 
-function StatusCard({ label, value, icon: Icon }) {
+function StatusCard({ label, value, icon: Icon }: StatusCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/60 px-4 py-4 flex items-center gap-3">
       <div className="h-10 w-10 rounded-full border border-[#F5D48A55] bg-black/40 flex items-center justify-center">
@@ -170,7 +196,7 @@ function StatusCard({ label, value, icon: Icon }) {
   );
 }
 
-function DirectiveRow({ label, description }) {
+function DirectiveRow({ label, description }: DirectiveRowProps) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/60 px-4 py-3">
       <div>
@@ -213,7 +239,7 @@ function MetaNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: NodeProps) {
   return (
     <div
       className={`absolute h-6 w-6 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_20px_rgba(36,58,107,0.8)] ${className}`}

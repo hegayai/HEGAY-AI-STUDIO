@@ -1,20 +1,25 @@
-// components/ui/Button.tsx
 "use client";
 
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
 import clsx from "clsx";
 
-export function Button({ className, children, ...props }) {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  className?: string;
+  children: ReactNode;
+};
+
+export function Button({ className = "", children, ...props }: ButtonProps) {
   return (
     <button
+      {...props}
       className={clsx(
-        "px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 active:bg-sky-700",
-        "text-white font-medium text-sm shadow-md hover:shadow-lg",
-        "transition-all duration-200",
+        "rounded-md bg-cyan-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed",
         className
       )}
-      {...props}
     >
       {children}
     </button>
   );
 }
+
+export default Button;

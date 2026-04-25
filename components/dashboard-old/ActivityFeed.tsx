@@ -1,70 +1,41 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { FiCpu, FiFeather, FiRadio, FiImage } from "react-icons/fi";
+import React from "react";
 
-const feed = [
-  {
-    icon: <FiCpu className="h-4 w-4 text-purple-300" />,
-    title: "Engine Pulse",
-    description: "Core engine synchronized with creative runtime.",
-    time: "2 min ago",
-  },
-  {
-    icon: <FiImage className="h-4 w-4 text-purple-300" />,
-    title: "Image Realm Update",
-    description: "New visual assets generated successfully.",
-    time: "12 min ago",
-  },
-  {
-    icon: <FiRadio className="h-4 w-4 text-purple-300" />,
-    title: "Broadcast Signal",
-    description: "Dream Radio pushed a new ambient layer.",
-    time: "27 min ago",
-  },
-  {
-    icon: <FiFeather className="h-4 w-4 text-purple-300" />,
-    title: "Creative Sync",
-    description: "Narrative engine synced with Studio OS.",
-    time: "1 hr ago",
-  },
-];
+type ActivityItem = {
+  id: string | number;
+  title: string;
+  description: string;
+  timestamp: string;
+};
 
-export default function ActivityFeed() {
+type ActivityFeedProps = {
+  items: ActivityItem[];
+};
+
+export default function ActivityFeed({ items }: ActivityFeedProps) {
   return (
-    <section className="w-full mt-10">
-      <h2 className="mb-4 text-lg font-semibold text-slate-100">
-        Activity Feed
-      </h2>
+    <div className="space-y-4">
+      {items.map((item) => (
+        <div
+          key={item.id}
+          className="rounded-lg border border-slate-800 bg-slate-900 p-4 hover:border-cyan-400/50 transition"
+        >
+          <div className="flex items-start justify-between">
+            <h3 className="text-sm font-semibold text-slate-100">
+              {item.title}
+            </h3>
 
-      <div className="space-y-4">
-        {feed.map((item, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.08 }}
-            className="flex items-start gap-4 rounded-2xl border border-white/10 bg-black/30 p-4 shadow-lg backdrop-blur hover:border-purple-400/40 hover:bg-black/40 transition"
-          >
-            <div className="rounded-xl bg-purple-500/20 p-2">
-              {item.icon}
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-sm font-semibold text-slate-100">
-                {item.title}
-              </h3>
-              <p classname="text-xs text-slate-400 mt-1">
-                {item.description}
-              </p>
-            </div>
-
-            <span className="text-[0.65rem] text-slate-500 whitespace-nowrap">
-              {item.time}
+            <span className="text-[10px] text-slate-500">
+              {new Date(item.timestamp).toLocaleString()}
             </span>
-          </motion.div>
-        ))}
-      </div>
-    </section>
+          </div>
+
+          <p className="text-xs text-slate-400 mt-1">
+            {item.description}
+          </p>
+        </div>
+      ))}
+    </div>
   );
 }

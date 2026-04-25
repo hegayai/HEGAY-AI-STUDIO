@@ -149,7 +149,13 @@ export default function SystemIntelligenceCodexPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function CategoryCard({ icon: Icon, title, description }) {
+type CategoryCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+};
+
+function CategoryCard({ icon: Icon, title, description }: CategoryCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-5 py-5 space-y-2">
       <div className="h-10 w-10 rounded-full border border-[#F5D48A55] bg-black/40 flex items-center justify-center">
@@ -161,7 +167,14 @@ function CategoryCard({ icon: Icon, title, description }) {
   );
 }
 
-function MetricCard({ icon: Icon, label, value, description }) {
+type MetricCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+  description: string;
+};
+
+function MetricCard({ icon: Icon, label, value, description }: MetricCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-5 py-5 space-y-1">
       <div className="flex items-center gap-3">
@@ -178,7 +191,12 @@ function MetricCard({ icon: Icon, label, value, description }) {
   );
 }
 
-function IntelligenceRow({ title, description }) {
+type IntelligenceRowProps = {
+  title: string;
+  description: string;
+};
+
+function IntelligenceRow({ title, description }: IntelligenceRowProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/60 px-4 py-3 space-y-1">
       <div className="text-sm font-semibold text-slate-100">{title}</div>
@@ -206,6 +224,10 @@ function MapDots() {
   );
 }
 
+type NodeProps = {
+  className?: string;
+};
+
 function MapNodes() {
   return (
     <div className="relative w-full h-full">
@@ -218,7 +240,7 @@ function MapNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: NodeProps) {
   return (
     <div
       className={`absolute h-7 w-7 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_30px_rgba(36,58,107,0.8)] ${className}`}

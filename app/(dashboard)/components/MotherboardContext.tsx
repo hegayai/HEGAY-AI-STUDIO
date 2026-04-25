@@ -2,10 +2,40 @@
 
 import { createContext, useContext, useState } from "react";
 
-const MotherboardContext = createContext(null);
+type MotherboardSettings = {
+  sidebar: boolean;
+  taskbar: boolean;
+  launcher: boolean;
+  notifications: boolean;
+  tabs: boolean;
+  windows: boolean;
+  desktop: boolean;
+  search: boolean;
+  commandPalette: boolean;
+  systemBar: boolean;
+  realms: {
+    origin: boolean;
+    aesthetic: boolean;
+    avatar: boolean;
+    mood: boolean;
+    dream: boolean;
+  };
+};
 
-export function MotherboardProvider({ children }) {
-  const [settings, setSettings] = useState({
+type MotherboardContextType = {
+  settings: MotherboardSettings;
+  toggle: (key: keyof MotherboardSettings) => void;
+  toggleRealm: (realm: keyof MotherboardSettings["realms"]) => void;
+};
+
+const MotherboardContext = createContext<MotherboardContextType | null>(null);
+
+export function MotherboardProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [settings, setSettings] = useState<MotherboardSettings>({
     sidebar: true,
     taskbar: true,
     launcher: true,
@@ -25,11 +55,11 @@ export function MotherboardProvider({ children }) {
     },
   });
 
-  function toggle(key) {
+  function toggle(key: keyof MotherboardSettings) {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   }
 
-  function toggleRealm(realm) {
+  function toggleRealm(realm: keyof MotherboardSettings["realms"]) {
     setSettings((prev) => ({
       ...prev,
       realms: { ...prev.realms, [realm]: !prev.realms[realm] },
@@ -44,5 +74,7 @@ export function MotherboardProvider({ children }) {
 }
 
 export function useMotherboard() {
-  return useContext(MotherboardContext);
+  const ctx = useContext(MotherboardContext);
+  if (!ctx) throw new Error("useMotherboard must be used inside MotherboardProvider");
+  return ctx;
 }

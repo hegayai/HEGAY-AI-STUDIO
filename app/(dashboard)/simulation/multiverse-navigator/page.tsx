@@ -35,9 +35,18 @@ export default function MultiverseNavigatorPage() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FilterBlock label="Universe Type" options={["All", "Prime", "Variant", "Forked", "Collapsed"]} />
-          <FilterBlock label="Realm Density" options={["All", "Low", "Medium", "High"]} />
-          <FilterBlock label="Pantheon Influence" options={["All", "Weak", "Moderate", "Strong"]} />
+          <FilterBlock
+            label="Universe Type"
+            options={["All", "Prime", "Variant", "Forked", "Collapsed"]}
+          />
+          <FilterBlock
+            label="Realm Density"
+            options={["All", "Low", "Medium", "High"]}
+          />
+          <FilterBlock
+            label="Pantheon Influence"
+            options={["All", "Weak", "Moderate", "Strong"]}
+          />
         </div>
       </section>
 
@@ -118,7 +127,12 @@ export default function MultiverseNavigatorPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function FilterBlock({ label, options }) {
+type FilterBlockProps = {
+  label: string;
+  options: string[];
+};
+
+function FilterBlock({ label, options }: FilterBlockProps) {
   return (
     <div className="space-y-2">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
@@ -133,7 +147,21 @@ function FilterBlock({ label, options }) {
   );
 }
 
-function UniverseCard({ name, type, realms, branches, color }) {
+type UniverseCardProps = {
+  name: string;
+  type: string;
+  realms: string;
+  branches: string;
+  color: string;
+};
+
+function UniverseCard({
+  name,
+  type,
+  realms,
+  branches,
+  color,
+}: UniverseCardProps) {
   return (
     <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-black/70 p-5 flex flex-col gap-3">
       <div className={`absolute inset-0 opacity-40 bg-gradient-to-br ${color} blur-3xl`} />
@@ -184,6 +212,8 @@ function MapDots() {
   );
 }
 
+type NodeProps = { className: string };
+
 function MapNodes() {
   return (
     <div className="relative w-full h-full">
@@ -196,7 +226,7 @@ function MapNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: NodeProps) {
   return (
     <div
       className={`absolute h-7 w-7 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_30px_rgba(36,58,107,0.8)] ${className}`}

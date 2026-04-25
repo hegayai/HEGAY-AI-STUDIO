@@ -1,24 +1,27 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
 
-export default function ToolCard({
-  title,
-  description,
-  aura,
-}: {
+type RealmToolCardProps = {
   title: string;
   description: string;
   aura: string;
-}) {
+  href: string; // ✅ FIXED — add href support
+};
+
+export default function RealmToolCard({
+  title,
+  description,
+  aura,
+  href,
+}: RealmToolCardProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      transition={{ duration: 0.2 }}
-      className={`rounded-xl border border-white/10 bg-gradient-to-br ${aura} p-4 backdrop-blur-xl cursor-pointer`}
+    <Link
+      href={href}
+      className={`p-6 rounded-xl bg-gradient-to-br ${aura} border border-white/10 shadow-lg hover:scale-[1.02] transition block`}
     >
-      <h3 className="text-sm font-semibold text-slate-100">{title}</h3>
-      <p className="mt-1 text-xs text-slate-300">{description}</p>
-    </motion.div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-300 text-sm">{description}</p>
+    </Link>
   );
 }

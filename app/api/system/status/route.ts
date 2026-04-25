@@ -46,7 +46,7 @@ export async function GET() {
 
     // Read last 10 log lines
     const logPath = "C:\\HegayOS\\logs\\startup.log";
-    let logs = [];
+    let logs: string[] = [];
 
     if (fs.existsSync(logPath)) {
       const content = fs.readFileSync(logPath, "utf8").split("\n");

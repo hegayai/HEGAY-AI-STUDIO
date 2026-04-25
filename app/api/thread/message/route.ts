@@ -1,29 +1,42 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/core/db/client";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { threadId, role, content } = await req.json();
+    const user = await getCurrentUser();
 
-    if (!threadId || !role || !content) {
+    if (!user) {
       return NextResponse.json(
-        { error: "Missing threadId, role, or content" },
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { threadId, message } = await req.json();
+
+    if (!threadId || !message) {
+      return NextResponse.json(
+        { error: "Missing threadId or message" },
         { status: 400 }
       );
     }
 
-    const message = await prisma.message.create({
+    const saved = await prisma.message.create({
       data: {
         threadId,
-        role,
-        content,
+        userId: user.id,
+        content: message,
       },
     });
 
-    return NextResponse.json({ message });
+    return NextResponse.json({
+      success: true,
+      message: saved,
+    });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Message creation failed" },
+      { error: err.message || "Failed to send message" },
       { status: 500 }
     );
   }

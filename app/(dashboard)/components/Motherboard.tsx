@@ -21,31 +21,41 @@ export default function Motherboard() {
           <h2 className="text-xl font-bold mb-4">Hegay OS Motherboard</h2>
 
           <div className="flex flex-col gap-3">
+
+            {/* SYSTEM TOGGLES */}
             {Object.keys(settings)
               .filter((k) => k !== "realms")
               .map((key) => (
                 <button
                   key={key}
-                  onClick={() => toggle(key)}
+                  onClick={() => toggle(key as keyof typeof settings)}
                   className="flex justify-between items-center px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all"
                 >
                   <span className="capitalize">{key}</span>
-                  <span>{settings[key] ? "ON" : "OFF"}</span>
+                  <span>
+                    {settings[key as keyof typeof settings] ? "ON" : "OFF"}
+                  </span>
                 </button>
               ))}
 
+            {/* REALMS */}
             <h3 className="mt-4 mb-2 font-semibold">Realms</h3>
 
             {Object.keys(settings.realms).map((realm) => (
               <button
                 key={realm}
-                onClick={() => toggleRealm(realm)}
+                onClick={() => toggleRealm(realm as keyof typeof settings.realms)}
                 className="flex justify-between items-center px-3 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all"
               >
                 <span className="capitalize">{realm}</span>
-                <span>{settings.realms[realm] ? "ON" : "OFF"}</span>
+                <span>
+                  {settings.realms[realm as keyof typeof settings.realms]
+                    ? "ON"
+                    : "OFF"}
+                </span>
               </button>
             ))}
+
           </div>
         </div>
       )}

@@ -1,11 +1,19 @@
-// context/RealmContext.tsx
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-const RealmContext = createContext(null);
+type RealmContextType = {
+  activeRealm: string;
+  setActiveRealm: (realm: string) => void;
+};
 
-export function RealmProvider({ children }) {
+const RealmContext = createContext<RealmContextType | null>(null);
+
+type RealmProviderProps = {
+  children: ReactNode;
+};
+
+export function RealmProvider({ children }: RealmProviderProps) {
   const [activeRealm, setActiveRealm] = useState("dashboard");
 
   return (
@@ -18,7 +26,7 @@ export function RealmProvider({ children }) {
 export function useRealm() {
   const ctx = useContext(RealmContext);
   if (!ctx) {
-    throw new Error("useRealm must be used inside RealmProvider");
+    throw new Error("useRealm must be used inside a RealmProvider");
   }
   return ctx;
 }

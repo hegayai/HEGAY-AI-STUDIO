@@ -1,50 +1,60 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { useRouter } from "next/navigation";
 
-const TabContext = createContext(null);
+export type Tab = {
+  id: string;
+  title: string;
+  path: string;
+};
 
-export function TabProvider({ children }) {
-  const [tabs, setTabs] = useState([
-    { title: "Origin", path: "/dashboard" }
-  ]);
-  const [active, setActive] = useState("/dashboard");
-  const router = useRouter();
+export type TabsContextType = {
+  tabs: Tab[];
+  active: string | null;
+  openTab: (title: string, path: string) => void;
+  switchTab: (path: string) => void;
+  closeTab: (path: string) => void;
+};
 
-  function openTab(title, path) {
+const TabsContext = createContext<TabsContextType | null>(null);
+
+export function TabsProvider({ children }: { children: React.ReactNode }) {
+  const [tabs, setTabs] = useState<Tab[]>([]);
+  const [active, setActive] = useState<string | null>(null);
+
+  function openTab(title: string, path: string) {
     setTabs((prev) => {
-      if (prev.some((t) => t.path === path)) return prev;
-      return [...prev, { title, path }];
+      if (!prev.find((t) => t.path === path)) {
+        return [...prev, { id: path, title, path }];
+      }
+      return prev;
     });
     setActive(path);
-    router.push(path);
   }
 
-  function closeTab(path) {
-    setTabs((prev) => prev.filter((t) => t.path !== path));
+  function switchTab(path: string) {
+    setActive(path);
+  }
 
+  function closeTab(path: string) {
+    setTabs((prev) => prev.filter((t) => t.path !== path));
     if (active === path) {
       const remaining = tabs.filter((t) => t.path !== path);
-      if (remaining.length > 0) {
-        setActive(remaining[0].path);
-        router.push(remaining[0].path);
-      }
+      setActive(remaining.length ? remaining[0].path : null);
     }
   }
 
-  function switchTab(path) {
-    setActive(path);
-    router.push(path);
-  }
-
   return (
-    <TabContext.Provider value={{ tabs, active, openTab, closeTab, switchTab }}>
+    <TabsContext.Provider
+      value={{ tabs, active, openTab, switchTab, closeTab }}
+    >
       {children}
-    </TabContext.Provider>
+    </TabsContext.Provider>
   );
 }
 
 export function useTabs() {
-  return useContext(TabContext);
+  const ctx = useContext(TabsContext);
+  if (!ctx) throw new Error("useTabs must be used inside TabsProvider");
+  return ctx;
 }

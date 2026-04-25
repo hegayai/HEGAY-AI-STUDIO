@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FiSettings,
@@ -90,7 +90,17 @@ export default function SettingsShell() {
   );
 }
 
-function Card({ title, description, children }) {
+/* -------------------------------------------------------
+   INTERNAL COMPONENTS — STRICT MODE SAFE
+------------------------------------------------------- */
+
+type CardProps = {
+  title: string;
+  description?: string;
+  children?: ReactNode;
+};
+
+function Card({ title, description, children }: CardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-4">
       <h3 className="text-sm font-semibold text-slate-100">{title}</h3>
@@ -102,7 +112,12 @@ function Card({ title, description, children }) {
   );
 }
 
-function ToggleRow({ label, hint }) {
+type ToggleRowProps = {
+  label: string;
+  hint?: string;
+};
+
+function ToggleRow({ label, hint }: ToggleRowProps) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
@@ -115,6 +130,10 @@ function ToggleRow({ label, hint }) {
     </div>
   );
 }
+
+/* -------------------------------------------------------
+   SETTINGS SECTIONS — STRICT MODE SAFE
+------------------------------------------------------- */
 
 function GeneralSettings() {
   return (

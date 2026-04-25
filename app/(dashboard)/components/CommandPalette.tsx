@@ -27,7 +27,7 @@ export default function CommandPalette() {
   }, []);
 
   useEffect(() => {
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
 

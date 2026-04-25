@@ -5,11 +5,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 type MinimalMotionContextType = {
   minimal: boolean;
   setMinimal: (value: boolean) => void;
+  toggleMinimal: () => void;
 };
 
 const MinimalMotionContext = createContext<MinimalMotionContextType>({
   minimal: false,
   setMinimal: () => {},
+  toggleMinimal: () => {},
 });
 
 export function useMinimalMotion() {
@@ -45,8 +47,15 @@ export function MinimalMotionProvider({ children }: { children: React.ReactNode 
     }
   };
 
+  /* ---------------------------------------------------------
+     NEW: TOGGLE MODE
+     --------------------------------------------------------- */
+  const toggleMinimal = () => {
+    setMinimal(!minimal);
+  };
+
   return (
-    <MinimalMotionContext.Provider value={{ minimal, setMinimal }}>
+    <MinimalMotionContext.Provider value={{ minimal, setMinimal, toggleMinimal }}>
       {children}
     </MinimalMotionContext.Provider>
   );

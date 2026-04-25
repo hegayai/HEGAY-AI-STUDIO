@@ -14,6 +14,8 @@ export default function DreamRealmPage() {
 
       <RealmToolPanel
         title="Dream Tools"
+        description="Tools for imagination, dream‑state simulation, subconscious modeling, emotional physics, and surreal world‑building."
+        aura="from-purple-500/20 to-pink-500/20"
         tools={[
           {
             title: "Dream Writer",

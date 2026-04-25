@@ -1,39 +1,53 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-const WindowContext = createContext(null);
+/* ───────────────── TYPES ───────────────── */
 
-export function WindowProvider({ children }) {
-  const [windows, setWindows] = useState([]);
+type WindowItem = {
+  id: string;
+  title: string;
+  content: React.ReactNode;
+};
 
-  function openWindow(component, title = "Window") {
-    const id = Date.now();
-    setWindows((prev) => [...prev, { id, component, title }]);
+type WindowsContextType = {
+  windows: WindowItem[];
+  openWindow: (content: React.ReactNode, title: string) => void;
+  closeWindow: (id: string) => void;
+};
+
+/* ───────────────── CONTEXT ───────────────── */
+
+const WindowsContext = createContext<WindowsContextType | null>(null);
+
+/* ───────────────── PROVIDER ───────────────── */
+
+export function WindowsProvider({ children }: { children: React.ReactNode }) {
+  const [windows, setWindows] = useState<WindowItem[]>([]);
+
+  function openWindow(content: React.ReactNode, title: string) {
+    const id = `${title}-${Date.now()}`;
+
+    setWindows((prev) => [...prev, { id, title, content }]);
   }
 
-  function closeWindow(id) {
+  function closeWindow(id: string) {
     setWindows((prev) => prev.filter((w) => w.id !== id));
   }
 
   return (
-    <WindowContext.Provider value={{ windows, openWindow, closeWindow }}>
+    <WindowsContext.Provider value={{ windows, openWindow, closeWindow }}>
       {children}
-
-      {windows.map((win) => (
-        <FloatingWindow
-          key={win.id}
-          id={win.id}
-          title={win.title}
-          onClose={() => closeWindow(win.id)}
-        >
-          {win.component}
-        </FloatingWindow>
-      ))}
-    </WindowContext.Provider>
+    </WindowsContext.Provider>
   );
 }
 
+/* ───────────────── HOOK ───────────────── */
+
 export function useWindows() {
-  return useContext(WindowContext);
+  const ctx = useContext(WindowsContext);
+  if (!ctx) {
+    throw new Error("useWindows must be used inside a WindowsProvider");
+  }
+  return ctx;
 }

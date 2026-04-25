@@ -13,7 +13,8 @@ export default function SystemBar() {
     "/dream": "Dream Realm",
   };
 
-  const realm = realmNames[pathname] || "Hegay OS";
+  const realm =
+    realmNames[pathname as keyof typeof realmNames] || "Hegay OS";
 
   return (
     <footer className="w-full fixed bottom-0 left-0 py-3 px-6 border-t border-white/10 bg-white/5 backdrop-blur flex items-center justify-between text-sm text-white/80">

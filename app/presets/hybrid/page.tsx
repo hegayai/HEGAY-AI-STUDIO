@@ -1,66 +1,61 @@
 "use client";
 
-import { GlowShell } from "@/components/MotionProvider";
 import { motion } from "framer-motion";
 
-const hybridPresets = [
-  {
-    title: "Culture‑Governance Fusion",
-    description: "A society where rituals define leadership and law.",
-  },
-  {
-    title: "Origin‑Economy Hybrid",
-    description: "Ancestral identity shaping value, trade, and prosperity.",
-  },
-  {
-    title: "Education‑Culture Synthesis",
-    description: "Learning systems built directly from cultural expression.",
-  },
-  {
-    title: "Five‑Realm Omni‑Preset",
-    description: "A full civilization blueprint combining all realms.",
-  },
-];
-
 export default function HybridPresetsPage() {
-  return (
-    <div className="min-h-screen w-full">
-      <div className="mx-auto max-w-6xl pt-10 pb-20 px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.6 }}
-          className="mb-10"
-        >
-          <h1 className="text-4xl font-semibold text-white">Hybrid Realm Templates</h1>
-          <p className="mt-2 text-slate-400 text-sm">
-            One‑click inter‑realm fusion presets
-          </p>
-        </motion.div>
+  const presets = [
+    {
+      title: "Hybrid Intelligence Model",
+      description: "Combines human and AI decision layers for adaptive simulations.",
+    },
+    {
+      title: "Multi‑Domain Fusion",
+      description: "Integrates economic, governance, and social systems into one model.",
+    },
+    {
+      title: "Cross‑System Dynamics",
+      description: "Simulates interactions between multiple independent subsystems.",
+    },
+  ];
 
-        <GlowShell>
-          <div className="space-y-8">
-            {hybridPresets.map((preset, index) => (
-              <PresetCard key={index} index={index} {...preset} />
-            ))}
-          </div>
-        </GlowShell>
+  return (
+    <div className="p-10">
+      <h1 className="text-3xl font-bold mb-6">Hybrid Presets</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {presets.map((p, i) => (
+          <PresetCard
+            key={i}
+            title={p.title}
+            description={p.description}
+            index={i}
+          />
+        ))}
       </div>
     </div>
   );
 }
 
-function PresetCard({ title, description, index }) {
+/* ─────────────────────────────────────────────── */
+/* FIXED: PresetCard now has explicit prop types   */
+/* ─────────────────────────────────────────────── */
+
+type PresetCardProps = {
+  title: string;
+  description: string;
+  index: number;
+};
+
+function PresetCard({ title, description, index }: PresetCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.08 }}
-      whileHover={{ scale: 1.02, x: 6 }}
-      className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl cursor-pointer hover:bg-white/10 transition-all"
+      transition={{ delay: index * 0.1 }}
+      className="p-6 rounded-xl bg-black/40 border border-gray-700 shadow-lg hover:bg-black/50 transition"
     >
-      <h3 className="text-lg font-semibold text-white">{title}</h3>
-      <p className="text-slate-400 text-sm mt-2">{description}</p>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-400 text-sm">{description}</p>
     </motion.div>
   );
 }

@@ -34,9 +34,18 @@ export default function MetaTimelinePage() {
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FilterBlock label="Event Type" options={["All", "Realm", "Civilization", "Pantheon", "Origin Law"]} />
-          <FilterBlock label="Time Range" options={["All Time", "Recent", "Epoch 1", "Epoch 2", "Epoch 3"]} />
-          <FilterBlock label="View Mode" options={["Linear", "Branching", "Compact", "Expanded"]} />
+          <FilterBlock
+            label="Event Type"
+            options={["All", "Realm", "Civilization", "Pantheon", "Origin Law"]}
+          />
+          <FilterBlock
+            label="Time Range"
+            options={["All Time", "Recent", "Epoch 1", "Epoch 2", "Epoch 3"]}
+          />
+          <FilterBlock
+            label="View Mode"
+            options={["Linear", "Branching", "Compact", "Expanded"]}
+          />
         </div>
       </section>
 
@@ -96,7 +105,12 @@ export default function MetaTimelinePage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function FilterBlock({ label, options }) {
+type FilterBlockProps = {
+  label: string;
+  options: string[];
+};
+
+function FilterBlock({ label, options }: FilterBlockProps) {
   return (
     <div className="space-y-2">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
@@ -111,7 +125,14 @@ function FilterBlock({ label, options }) {
   );
 }
 
-function TimelineEvent({ icon: Icon, title, time, description }) {
+type TimelineEventProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  time: string;
+  description: string;
+};
+
+function TimelineEvent({ icon: Icon, title, time, description }: TimelineEventProps) {
   return (
     <div className="relative pl-10">
       {/* Line */}

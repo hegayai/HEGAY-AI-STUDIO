@@ -1,3 +1,7 @@
+// ------------------------------------------------------
+// Prisma 7 – Hegay AI Studio – Final Clean Schema
+// ------------------------------------------------------
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,42 +10,42 @@ datasource db {
   provider = "postgresql"
 }
 
-//
 // ------------------------------------------------------
 // COSMIC IDENTITY SYSTEM
 // ------------------------------------------------------
-//
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  name         String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String              @id @default(uuid())
+  email          String              @unique
+  passwordHash   String
+  name           String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  emailVerified  Boolean             @default(false)
 
-  // NEW — PLAN + STRIPE + USAGE
-  planId       String   @default("free") // free | starter | pro | creator | admin
-  stripeId     String?  @unique
-  usages       Usage[]
+  planId         String              @default("free")
+  stripeId       String?             @unique
 
-  profile   CreatorProfile?
-  roles     UserRole[]
-  sessions  Session[]
-  apiKeys   APIKey[]
-  auditLogs AuditLog[]
+  usages         Usage[]
+  profile        CreatorProfile?
+  roles          UserRole[]
+  sessions       Session[]
+  apiKeys        APIKey[]
+  auditLogs      AuditLog[]
 
-  // Creator Economy Relations
-  creditWallet CreditWallet?
-  tokenHistory TokenTransaction[]
-  rewards      Reward[]
-  ambassador   Ambassador?
+  creditWallet   CreditWallet?
+  tokenHistory   TokenTransaction[]
+  rewards        Reward[]
+  ambassador     Ambassador?
 
-  // Marketplace + Subscriptions + Revenue + Tiers
   marketplaceItems MarketplaceItem[]
   subscriptions    UserSubscription[]
   revenueShares    RevenueShare[]
   userTier         UserTier?
+
+  media          Media[]
+  threads        Thread[]
+  memory         Memory[]
 }
 
 model CreatorProfile {
@@ -129,11 +133,9 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id])
 }
 
-//
 // ------------------------------------------------------
 // GOVERNANCE SYSTEM
 // ------------------------------------------------------
-//
 
 model CosmicLaw {
   id          String   @id @default(uuid())
@@ -160,11 +162,9 @@ model ContinuityRecord {
   createdAt DateTime @default(now())
 }
 
-//
 // ------------------------------------------------------
 // LEGACY + PANTHEON + ETERNAL RECORDS
 // ------------------------------------------------------
-//
 
 model PantheonEntity {
   id        String   @id @default(uuid())
@@ -191,11 +191,9 @@ model EternalRecord {
   createdAt DateTime @default(now())
 }
 
-//
 // ------------------------------------------------------
 // CREATOR ECONOMY ENGINE
 // ------------------------------------------------------
-//
 
 model CreditWallet {
   id        String   @id @default(uuid())
@@ -240,11 +238,9 @@ model Ambassador {
   user User @relation(fields: [userId], references: [id])
 }
 
-//
 // ------------------------------------------------------
 // MARKETPLACE + SUBSCRIPTIONS + REVENUE + TIERS
 // ------------------------------------------------------
-//
 
 model MarketplaceItem {
   id          String   @id @default(uuid())
@@ -272,7 +268,7 @@ model SubscriptionPlan {
 
 model UserSubscription {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String   @unique
   planId    String
   active    Boolean  @default(true)
   startedAt DateTime @default(now())
@@ -312,18 +308,149 @@ model UserTier {
   tier Tier @relation(fields: [tierId], references: [id])
 }
 
-//
 // ------------------------------------------------------
-// USAGE TRACKING (NEW)
+// USAGE TRACKING
 // ------------------------------------------------------
-//
 
 model Usage {
-  id          String   @id @default(uuid())
-  userId      String
-  date        DateTime
-  imagesUsed  Int      @default(0)
-  videosUsed  Int      @default(0)
+  id         String   @id @default(uuid())
+  userId     String
+  date       DateTime
+  imagesUsed Int      @default(0)
+  videosUsed Int      @default(0)
 
   user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, date])   // ⭐ NEW
+}
+
+// ------------------------------------------------------
+// MEDIA LIBRARY
+// ------------------------------------------------------
+
+model Media {
+  id        String   @id @default(uuid())
+  userId    String
+  url       String
+  type      String
+  prompt    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt   // ⭐ NEW
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])    // ⭐ NEW
+}
+
+// ------------------------------------------------------
+// HEGAY CHAT ENGINE
+// ------------------------------------------------------
+
+model Thread {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  messages Message[]
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  threadId  String
+  role      String
+  content   String
+  createdAt DateTime @default(now())
+
+  thread Thread @relation(fields: [threadId], references: [id])
+}
+
+// ------------------------------------------------------
+// MEMORY ENGINE
+// ------------------------------------------------------
+
+model Memory {
+  id        String   @id @default(uuid())
+  userId    String
+  key       String
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, key], name: "userId_key")
+}
+
+// ------------------------------------------------------
+// PRESET ENGINE – CIVILIZATIONS / REALMS / BLUEPRINTS
+// ------------------------------------------------------
+
+model Preset {
+  id          String   @id @default(uuid())
+  presetId    String   @unique
+  title       String
+  description String?
+  template    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  fields      PresetField[]
+  generations PresetGeneration[]
+}
+
+model PresetField {
+  id           String   @id @default(uuid())
+  presetId     String
+  key          String
+  label        String
+  section      String
+  placeholder  String?
+  defaultValue String?
+
+  preset Preset @relation(fields: [presetId], references: [presetId])
+
+  @@index([presetId])
+}
+
+model PresetGeneration {
+  id        String   @id @default(uuid())
+  presetId  String
+  output    String
+  params    Json
+  createdAt DateTime @default(now())
+
+  preset Preset @relation(fields: [presetId], references: [presetId])
+
+  @@index([presetId])
+}
+
+// ------------------------------------------------------
+// JOB QUEUE – WORKFLOWS / BACKGROUND TASKS
+// ------------------------------------------------------
+
+model Job {
+  id          String   @id @default(uuid())
+  workflowId  String
+  payload     Json
+  status      String   @default("queued")
+  result      Json?
+  error       String?
+  runAt       DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  completedAt DateTime?
+}
+
+// ------------------------------------------------------
+// SYSTEM EVENTS / COSMIC TELEMETRY
+// ------------------------------------------------------
+
+model SystemEvent {
+  id        String   @id @default(uuid())
+  type      String
+  payload   Json
+  createdAt DateTime @default(now())
 }

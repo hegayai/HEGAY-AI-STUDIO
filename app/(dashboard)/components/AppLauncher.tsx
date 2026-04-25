@@ -7,12 +7,18 @@ import { useDesktop } from "./DesktopRegistry";
 
 export default function AppLauncher() {
   const [open, setOpen] = useState(false);
-  const { openTab } = useTabs();
-  const { openWindow } = useWindows();
-  const { items } = useDesktop();
+
+  // SAFE FALLBACKS to prevent null errors
+  const tabs = useTabs() || { openTab: () => {} };
+  const windows = useWindows() || { openWindow: () => {} };
+  const desktop = useDesktop() || { items: [] };
+
+  const { openTab } = tabs;
+  const { openWindow } = windows;
+  const { items } = desktop;
 
   useEffect(() => {
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
       if (e.ctrlKey && e.key.toLowerCase() === "space") {
         e.preventDefault();
@@ -24,7 +30,7 @@ export default function AppLauncher() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
-  function launch(item) {
+  function launch(item: any) {
     if (item.type === "realm") {
       openTab(item.label, item.path);
     }
@@ -48,7 +54,7 @@ export default function AppLauncher() {
       <h1 className="text-4xl font-bold mb-10 opacity-90">Hegay OS Launcher</h1>
 
       <div className="grid grid-cols-6 gap-10 px-20">
-        {items.map((item) => (
+        {items.map((item: any) => (
           <button
             key={item.id}
             onClick={() => launch(item)}

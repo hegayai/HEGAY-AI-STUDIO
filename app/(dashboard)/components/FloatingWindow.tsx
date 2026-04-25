@@ -2,13 +2,25 @@
 
 import { useRef, useState } from "react";
 
-export default function FloatingWindow({ id, title, children, onClose }) {
-  const ref = useRef(null);
+type FloatingWindowProps = {
+  id: string;
+  title: string;
+  children: React.ReactNode;
+  onClose: () => void;
+};
+
+export default function FloatingWindow({
+  id,
+  title,
+  children,
+  onClose,
+}: FloatingWindowProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
   const [pos, setPos] = useState({ x: 200, y: 150 });
   const [dragging, setDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-  function startDrag(e) {
+  function startDrag(e: React.MouseEvent<HTMLDivElement>) {
     setDragging(true);
     setOffset({
       x: e.clientX - pos.x,
@@ -20,7 +32,7 @@ export default function FloatingWindow({ id, title, children, onClose }) {
     setDragging(false);
   }
 
-  function onDrag(e) {
+  function onDrag(e: React.MouseEvent<HTMLDivElement>) {
     if (!dragging) return;
     setPos({
       x: e.clientX - offset.x,
@@ -30,6 +42,7 @@ export default function FloatingWindow({ id, title, children, onClose }) {
 
   return (
     <div
+      ref={ref}
       onMouseMove={onDrag}
       onMouseUp={stopDrag}
       className="fixed z-50"
@@ -38,9 +51,7 @@ export default function FloatingWindow({ id, title, children, onClose }) {
         top: pos.y,
       }}
     >
-      <div
-        className="w-[420px] bg-white/10 backdrop-blur border border-white/20 rounded-xl shadow-xl"
-      >
+      <div className="w-[420px] bg-white/10 backdrop-blur border border-white/20 rounded-xl shadow-xl">
         <div
           className="cursor-move px-4 py-2 bg-white/20 rounded-t-xl flex justify-between items-center"
           onMouseDown={startDrag}

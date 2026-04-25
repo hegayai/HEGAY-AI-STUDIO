@@ -18,7 +18,7 @@ type MotionProviderProps = {
  */
 const TRANSITION = {
   duration: 0.45,
-  ease: [0.25, 0.1, 0.25, 1.0], // Apple-like cubic-bezier
+  ease: [0.25, 0.1, 0.25, 1.0] as [number, number, number, number], // ✅ FIXED TYPING
 };
 
 const FADE_SCALE_VARIANTS = {
@@ -160,14 +160,13 @@ export const MotionProvider: React.FC<MotionProviderProps> = ({ children }) => {
   const pathname = usePathname();
 
   const key = useMemo(() => {
-    // Use pathname as transition key so each route animates in/out
     return pathname || "/";
   }, [pathname]);
 
   return (
     <MotionConfig
       transition={TRANSITION}
-      reducedMotion="user" // respects OS-level reduced motion
+      reducedMotion="user"
     >
       <CosmicBackground />
 

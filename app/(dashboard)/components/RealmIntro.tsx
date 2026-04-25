@@ -2,22 +2,26 @@
 
 import { useEffect, useState } from "react";
 
-export default function RealmIntro({ title, description }) {
+type RealmIntroProps = {
+  title: string;
+  description: string;
+};
+
+export default function RealmIntro({ title, description }: RealmIntroProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 150);
-    return () => clearTimeout(timer);
+    setVisible(true);
   }, []);
 
   return (
     <div
       className={`transition-all duration-700 ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       }`}
     >
-      <h1 className="text-5xl font-bold mb-4">{title}</h1>
-      <p className="text-lg opacity-80 max-w-xl">{description}</p>
+      <h1 className="text-4xl font-bold mb-4">{title}</h1>
+      <p className="text-white/70 text-lg">{description}</p>
     </div>
   );
 }

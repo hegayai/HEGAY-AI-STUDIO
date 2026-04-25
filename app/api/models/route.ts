@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { modelRouter } from "@/app/ai/modelRouter";
 import { systemPrompt } from "@/app/ai/prompts/systemPrompt";
+import { callModel } from "@/app/ai/callModel";
 
 export async function POST(req: Request) {
   try {
-    const { prompt, model } = await req.json();
+    const { prompt, model, provider } = await req.json();
 
     if (!prompt || !model) {
       return NextResponse.json(
@@ -13,10 +13,11 @@ export async function POST(req: Request) {
       );
     }
 
-    const result = await modelRouter({
-      prompt,
+    const result = await callModel({
+      provider: provider || "local",
       model,
       systemPrompt,
+      prompt,
     });
 
     return NextResponse.json({ result });

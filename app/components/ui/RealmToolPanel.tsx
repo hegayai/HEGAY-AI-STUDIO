@@ -1,32 +1,48 @@
 "use client";
 
-import ToolCard from "./ToolCard";
+import React from "react";
 
-export default function RealmToolPanel({
-  title,
-  tools,
-}: {
+type RealmToolPanelProps = {
   title: string;
-  tools: {
+  description: string;
+  aura: string;
+  tools?: {
     title: string;
     description: string;
     aura: string;
   }[];
-}) {
-  return (
-    <section className="rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-xl space-y-4">
-      <h2 className="text-sm font-semibold text-slate-100">{title}</h2>
+  children?: React.ReactNode; // ✅ FIXED — allow children
+};
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {tools.map((tool) => (
-          <ToolCard
-            key={tool.title}
-            title={tool.title}
-            description={tool.description}
-            aura={tool.aura}
-          />
+export default function RealmToolPanel({
+  title,
+  description,
+  aura,
+  tools = [],
+  children,
+}: RealmToolPanelProps) {
+  return (
+    <div className={`p-10 rounded-2xl bg-gradient-to-br ${aura} border border-white/10`}>
+      <h1 className="text-4xl font-bold mb-4">{title}</h1>
+      <p className="text-gray-300 mb-8">{description}</p>
+
+      {children && (
+        <div className="mb-10">
+          {children}
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {tools.map((tool, i) => (
+          <div
+            key={i}
+            className="p-6 rounded-xl bg-black/40 border border-gray-700 shadow-lg"
+          >
+            <h3 className="text-xl font-semibold mb-2">{tool.title}</h3>
+            <p className="text-gray-400 text-sm">{tool.description}</p>
+          </div>
         ))}
       </div>
-    </section>
+    </div>
   );
 }

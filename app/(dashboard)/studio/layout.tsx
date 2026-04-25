@@ -1,4 +1,12 @@
-export default function StudioLayout({ children }) {
+// app/(dashboard)/studio/layout.tsx
+
+import React from "react";
+
+type StudioLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default function StudioLayout({ children }: StudioLayoutProps) {
   return (
     <div className="min-h-screen flex">
       <aside className="w-64 glass-panel p-6 border-r border-white/10">

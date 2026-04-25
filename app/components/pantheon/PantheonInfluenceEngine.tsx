@@ -1,30 +1,29 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { PantheonInfluenceRegistry, InfluenceDefinition } from "./InfluenceRegistry";
+import React from "react";
+import { useApplyInfluence } from "./useApplyInfluence";
 
-type InfluenceContextType = {
-  getInfluenceForRealm: (realm: string) => InfluenceDefinition[];
-};
-
-const InfluenceContext = createContext<InfluenceContextType | null>(null);
-
-export function useInfluence() {
-  const ctx = useContext(InfluenceContext);
-  if (!ctx) throw new Error("useInfluence must be used inside <PantheonInfluenceProvider>");
-  return ctx;
-}
-
-export function PantheonInfluenceProvider({ children }: { children: ReactNode }) {
-  const getInfluenceForRealm = (realm: string) => {
-    return PantheonInfluenceRegistry.filter((inf) =>
-      inf.realms.includes(realm)
-    );
-  };
+export default function PantheonInfluenceEngine({
+  realm,
+  children,
+}: {
+  realm: string;
+  children: React.ReactNode;
+}) {
+  const influence = useApplyInfluence(realm);
 
   return (
-    <InfluenceContext.Provider value={{ getInfluenceForRealm }}>
+    <div
+      className={`
+        ${influence.color || ""}
+        ${influence.glow ? "shadow-[0_0_40px_rgba(255,200,150,0.3)]" : ""}
+        w-full h-full rounded-xl transition-all duration-300
+      `}
+      style={{
+        opacity: influence.intensity / 100,
+      }}
+    >
       {children}
-    </InfluenceContext.Provider>
+    </div>
   );
 }

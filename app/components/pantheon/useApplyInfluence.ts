@@ -1,16 +1,19 @@
-"use client";
+import { PantheonInfluenceRegistry, InfluenceDefinition } from "./InfluenceRegistry";
 
-import { useInfluence } from "./PantheonInfluenceEngine";
+export function useApplyInfluence(realm: string): InfluenceDefinition {
+  const match = PantheonInfluenceRegistry.find((inf) =>
+    inf.realms.includes(realm)
+  );
 
-export function useApplyInfluence(realm: string) {
-  const { getInfluenceForRealm } = useInfluence();
-  const influences = getInfluenceForRealm(realm);
-
-  const combined = {
-    color: influences.find((i) => i.effects.color)?.effects.color,
-    glow: influences.some((i) => i.effects.glow),
-    motion: influences.find((i) => i.effects.motion)?.effects.motion,
-  };
-
-  return combined;
+  return (
+    match || {
+      archetype: "Neutral",
+      type: "wisdom",
+      intensity: 0,
+      realms: [],
+      color: "",
+      glow: false,
+      motion: "slow",
+    }
+  );
 }

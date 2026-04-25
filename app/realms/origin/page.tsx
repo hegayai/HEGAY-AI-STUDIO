@@ -1,64 +1,39 @@
 "use client";
 
-import { GlowShell } from "@/components/MotionProvider";
-import { motion } from "framer-motion";
+import RealmIntro from "@/app/components/ui/RealmIntro";
+import RealmToolPanel from "@/app/components/ui/RealmToolPanel";
 
-export default function OriginRealmPage() {
+export default function ThreeDRealmPage() {
   return (
-    <div className="min-h-screen w-full">
-      <div className="mx-auto max-w-6xl pt-10 pb-20 px-6">
-        {/* HEADER */}
-        <motion.div
-          initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          transition={{ duration: 0.6 }}
-          className="mb-10"
-        >
-          <h1 className="text-4xl font-semibold text-white">Origin Realm</h1>
-          <p className="mt-2 text-slate-400 text-sm">
-            Ancestry • Mythic Roots • Foundational Identity
-          </p>
-        </motion.div>
+    <main className="space-y-8">
+      <RealmIntro
+        title="3D Realm"
+        description="The spatial imagination engine of your Creative OS — models, materials, lighting, and rendering systems."
+        aura="from-cyan-500/40 to-blue-500/40"
+      />
 
-        {/* PANEL */}
-        <GlowShell>
-          <div className="space-y-8">
-            <Section
-              title="Realm Purpose"
-              text="The Origin Realm defines ancestry, mythic foundations, and the emotional DNA of a civilization. It is the root layer of identity."
-            />
-
-            <Section
-              title="Core Functions"
-              text="• Ancestral identity generation  
-• Mythic origin stories  
-• Foundational cultural archetypes  
-• Emotional resonance mapping"
-            />
-
-            <Section
-              title="Launch Tools"
-              text="• Origin Story Generator  
-• Ancestral Archetype Engine  
-• Mythic Lineage Builder"
-            />
-          </div>
-        </GlowShell>
-      </div>
-    </div>
-  );
-}
-
-function Section({ title, text }: { title: string; text: string }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="space-y-2"
-    >
-      <h2 className="text-xl font-medium text-white">{title}</h2>
-      <p className="text-slate-400 whitespace-pre-line">{text}</p>
-    </motion.div>
+      <RealmToolPanel
+        title="3D Tools"
+        description="Tools for generating models, materials, lighting setups, and render pipelines."
+        aura="from-cyan-500/20 to-blue-500/20"
+        tools={[
+          {
+            title: "Model Generator",
+            description: "Create 3D models, meshes, and geometric structures.",
+            aura: "from-cyan-500/20 to-blue-500/20",
+          },
+          {
+            title: "Material Engine",
+            description: "Design materials, shaders, and surface properties.",
+            aura: "from-blue-500/20 to-indigo-500/20",
+          },
+          {
+            title: "Lighting Engine",
+            description: "Generate lighting setups and atmospheric illumination.",
+            aura: "from-indigo-500/20 to-purple-500/20",
+          },
+        ]}
+      />
+    </main>
   );
 }

@@ -1,58 +1,81 @@
-import prisma from "./prisma";
+// lib/jobQueue.ts
+import { prisma } from "@/lib/prisma";
 
+/**
+ * Enqueue a new job for a workflow.
+ */
 export async function enqueueJob(workflowId: string, payload: any = {}) {
   return prisma.job.create({
     data: {
       workflowId,
       payload,
-      status: "pending",
+      status: "queued",
     },
   });
 }
 
-export async function claimNextJob() {
-  const job = await prisma.job.findFirst({
-    where: { status: "pending" },
-    orderBy: { createdAt: "asc" },
-  });
-
-  if (!job) return null;
-
+/**
+ * Mark a job as running.
+ */
+export async function startJob(id: string) {
   return prisma.job.update({
-    where: { id: job.id },
-    data: { status: "processing" },
+    where: { id },
+    data: {
+      status: "running",
+      runAt: new Date(),
+    },
   });
 }
 
-export async function completeJob(jobId: string, result: any) {
+/**
+ * Mark a job as completed and store the result.
+ */
+export async function completeJob(id: string, result: any) {
   return prisma.job.update({
-    where: { id: jobId },
+    where: { id },
     data: {
       status: "completed",
-      result,
+      result, // Prisma 7 + updated schema supports this now
+      completedAt: new Date(),
     },
   });
 }
 
-export async function failJob(jobId: string, error: string) {
+/**
+ * Mark a job as failed and store the error message.
+ */
+export async function failJob(id: string, error: string) {
   return prisma.job.update({
-    where: { id: jobId },
+    where: { id },
     data: {
       status: "failed",
       error,
+      completedAt: new Date(),
     },
   });
 }
 
-export async function getJob(jobId: string) {
+/**
+ * Fetch a single job by ID.
+ */
+export async function getJob(id: string) {
   return prisma.job.findUnique({
-    where: { id: jobId },
+    where: { id },
   });
 }
 
-export async function listJobs(limit = 50) {
+/**
+ * List jobs, optionally filtered by workflowId or status.
+ */
+export async function listJobs(filters?: {
+  workflowId?: string;
+  status?: string;
+}) {
   return prisma.job.findMany({
+    where: {
+      workflowId: filters?.workflowId,
+      status: filters?.status,
+    },
     orderBy: { createdAt: "desc" },
-    take: limit,
   });
 }

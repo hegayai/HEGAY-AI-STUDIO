@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { useNotify } from "./NotificationProvider";
+import React from "react";
+import { useNotification } from "@/app/context/NotificationContext";
 
-export default function BackupButton({ onComplete }: { onComplete: () => void }) {
-  const [loading, setLoading] = useState(false);
-  const notify = useNotify();
+export default function BackupButton({
+  onComplete,
+}: {
+  onComplete: () => void;
+}) {
+  const { notify } = useNotification(); // ✅ FIXED — destructure the function
 
-  const triggerBackup = async () => {
-    setLoading(true);
-
+  const handleBackup = async () => {
     try {
-      const res = await fetch("/api/system/backup", { method: "POST" });
+      const res = await fetch("/api/backup", { method: "POST" });
       const data = await res.json();
 
       if (data.success) {
@@ -21,23 +22,16 @@ export default function BackupButton({ onComplete }: { onComplete: () => void })
         notify("Backup failed: " + data.error, "error");
       }
     } catch (err: any) {
-      notify("Backup failed: " + err.message, "error");
+      notify("Backup error: " + err.message, "error");
     }
-
-    setLoading(false);
   };
 
   return (
     <button
-      onClick={triggerBackup}
-      disabled={loading}
-      className={`mt-4 px-6 py-3 rounded-lg font-semibold transition ${
-        loading
-          ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-          : "bg-blue-600 hover:bg-blue-500 text-white"
-      }`}
+      onClick={handleBackup}
+      className="rounded-lg bg-purple-600 px-4 py-2 text-sm text-white hover:bg-purple-700"
     >
-      {loading ? "Creating Backup…" : "Create Backup Now"}
+      Run Backup
     </button>
   );
 }

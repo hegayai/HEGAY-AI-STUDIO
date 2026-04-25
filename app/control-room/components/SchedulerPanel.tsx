@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { useNotify } from "./NotificationProvider";
 
 export default function SchedulerPanel() {
-  const [workflows, setWorkflows] = useState<any[]>([]);
   const [schedules, setSchedules] = useState<any[]>([]);
   const [workflowId, setWorkflowId] = useState("");
-  const [interval, setInterval] = useState("");
-  const notify = useNotify();
+  const [cron, setCron] = useState("");
+  const [workflows, setWorkflows] = useState<any[]>([]);
+
+  // ✅ FIXED — destructure notify from context
+  const { notify } = useNotify();
 
   const loadData = async () => {
     try {
@@ -26,8 +28,8 @@ export default function SchedulerPanel() {
   };
 
   const addSchedule = async () => {
-    if (!workflowId || !interval) {
-      notify("Select workflow and interval", "info");
+    if (!workflowId || !cron) {
+      notify("Select workflow and enter CRON expression", "info");
       return;
     }
 
@@ -36,13 +38,13 @@ export default function SchedulerPanel() {
         method: "POST",
         body: JSON.stringify({
           workflowId: Number(workflowId),
-          interval: Number(interval),
+          cron,
         }),
       });
 
       notify("Schedule created", "success");
       setWorkflowId("");
-      setInterval("");
+      setCron("");
       loadData();
     } catch {
       notify("Failed to create schedule", "error");
@@ -86,18 +88,12 @@ export default function SchedulerPanel() {
           ))}
         </select>
 
-        <select
-          value={interval}
-          onChange={(e) => setInterval(e.target.value)}
+        <input
+          value={cron}
+          onChange={(e) => setCron(e.target.value)}
           className="w-full p-3 rounded bg-black/40 border border-gray-700 text-gray-200 mb-3"
-        >
-          <option value="">Select interval…</option>
-          <option value="60">Every 1 minute</option>
-          <option value="300">Every 5 minutes</option>
-          <option value="900">Every 15 minutes</option>
-          <option value="3600">Every hour</option>
-          <option value="86400">Daily</option>
-        </select>
+          placeholder="CRON expression (e.g., */5 * * * *)"
+        />
 
         <button
           onClick={addSchedule}
@@ -118,7 +114,7 @@ export default function SchedulerPanel() {
           >
             <div className="flex justify-between mb-2">
               <span className="font-semibold">
-                Workflow #{sc.workflowId} — every {sc.interval}s
+                Workflow #{sc.workflowId} — {sc.cron}
               </span>
               <button
                 onClick={() => deleteSchedule(sc.id)}
@@ -129,7 +125,7 @@ export default function SchedulerPanel() {
             </div>
 
             <div className="text-sm text-gray-400">
-              Last run: {sc.lastRun || "Never"}
+              Next run: {sc.nextRun || "unknown"}
             </div>
           </div>
         ))}

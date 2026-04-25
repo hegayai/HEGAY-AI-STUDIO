@@ -1,26 +1,30 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/core/db/client";
+import { getCurrentUser } from "@/lib/auth";
 
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    const { userId } = await req.json();
+    const user = await getCurrentUser();
 
-    if (!userId) {
+    if (!user) {
       return NextResponse.json(
-        { error: "Missing userId" },
-        { status: 400 }
+        { error: "Unauthorized" },
+        { status: 401 }
       );
     }
 
     const memory = await prisma.memory.findMany({
-      where: { userId },
-      orderBy: { createdAt: "asc" },
+      where: { userId: user.id },
+      orderBy: { createdAt: "desc" },
     });
 
-    return NextResponse.json({ memory });
+    return NextResponse.json({
+      success: true,
+      memory,
+    });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Failed to fetch memory" },
+      { error: err.message || "Failed to load memory" },
       { status: 500 }
     );
   }

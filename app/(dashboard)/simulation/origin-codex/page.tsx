@@ -134,7 +134,13 @@ export default function OriginCodexPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function CategoryCard({ icon: Icon, title, description }) {
+type CategoryCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+};
+
+function CategoryCard({ icon: Icon, title, description }: CategoryCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-5 py-5 space-y-2">
       <div className="h-10 w-10 rounded-full border border-[#F5D48A55] bg-black/40 flex items-center justify-center">
@@ -146,7 +152,11 @@ function CategoryCard({ icon: Icon, title, description }) {
   );
 }
 
-function LawRow({ name }) {
+type LawRowProps = {
+  name: string;
+};
+
+function LawRow({ name }: LawRowProps) {
   return (
     <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/60 px-4 py-3">
       <div className="text-sm text-slate-100">{name}</div>
@@ -155,7 +165,13 @@ function LawRow({ name }) {
   );
 }
 
-function EffectCard({ icon: Icon, label, description }) {
+type EffectCardProps = {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  description: string;
+};
+
+function EffectCard({ icon: Icon, label, description }: EffectCardProps) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-5 py-5 space-y-2">
       <div className="h-10 w-10 rounded-full border border-[#F5D48A55] bg-black/40 flex items-center justify-center">
@@ -186,6 +202,8 @@ function MapDots() {
   );
 }
 
+type NodeProps = { className: string };
+
 function MapNodes() {
   return (
     <div className="relative w-full h-full">
@@ -198,7 +216,7 @@ function MapNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: NodeProps) {
   return (
     <div
       className={`absolute h-7 w-7 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_30px_rgba(36,58,107,0.8)] ${className}`}

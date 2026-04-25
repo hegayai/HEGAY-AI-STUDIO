@@ -1,28 +1,35 @@
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 
-export default function RealmCard({ title, description, accent }) {
+type RealmCardProps = {
+  title: string;
+  description: string;
+  accent: string; // gradient or color class
+};
+
+export default function RealmCard({ title, description, accent }: RealmCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className={`group cursor-pointer rounded-3xl border border-white/10 bg-gradient-to-br ${accent} p-6 shadow-xl backdrop-blur transition hover:border-purple-400/40 hover:bg-black/40`}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+      className={`group relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-5 shadow-lg backdrop-blur-xl hover:border-cyan-400/40 transition`}
     >
-      <h3 className="text-lg font-semibold text-slate-100">
-        {title}
-      </h3>
+      {/* Accent Glow */}
+      <div
+        className={`absolute inset-0 opacity-20 blur-2xl bg-gradient-to-br ${accent}`}
+      />
 
-      <p className="mt-2 text-sm text-slate-300/80">
-        {description}
-      </p>
+      {/* Content */}
+      <div className="relative z-10 space-y-2">
+        <h3 className="text-lg font-semibold text-slate-100">{title}</h3>
+        <p className="text-sm text-slate-400">{description}</p>
+      </div>
 
-      <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-      <p className="mt-3 text-xs text-purple-200/70">
-        Enter realm →
-      </p>
+      {/* Hover Shine */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition bg-gradient-to-t from-white/10 to-transparent" />
     </motion.div>
   );
 }

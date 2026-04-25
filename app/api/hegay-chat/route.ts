@@ -1,38 +1,42 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/core/db/client";
 import { hegayRouter } from "@/lib/hegay-router";
-import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { messages, mode, userId, threadId } = await req.json();
+    const { userId, message } = await req.json();
 
-    if (!messages || !Array.isArray(messages) || !mode || !userId) {
+    if (!userId || !message) {
       return NextResponse.json(
-        { error: "Missing or invalid messages, mode, or userId" },
+        { error: "Missing userId or message" },
         { status: 400 }
       );
     }
 
-    const aiResponse = await hegayRouter({
-      messages,
-      mode,
-      userId,
+    // Process message through your custom router
+    const reply = await hegayRouter.process(message);
+
+    // Save chat message + reply
+    const saved = await prisma.chat.create({
+      data: {
+        userId,
+        message,
+        reply,
+      },
     });
 
-    if (threadId) {
-      await prisma.message.create({
-        data: {
-          threadId,
-          role: "assistant",
-          content: aiResponse,
-        },
-      });
-    }
-
-    return NextResponse.json({ response: aiResponse });
+    return NextResponse.json({
+      success: true,
+      chat: {
+        id: saved.id,
+        message: saved.message,
+        reply: saved.reply,
+        createdAt: saved.createdAt,
+      },
+    });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message || "Hegay chat error" },
+      { error: err.message || "Chat processing failed" },
       { status: 500 }
     );
   }

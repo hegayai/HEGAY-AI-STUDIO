@@ -2,9 +2,37 @@
 
 import { useState, useEffect } from "react";
 
+type JobImage = {
+  url: string;
+  meta?: {
+    model?: string;
+    width: number;
+    height: number;
+  };
+};
+
+type JobResult = {
+  finalContext?: any;
+  logs?: string[];
+  trace?: any;
+  images?: JobImage[];
+};
+
+type Job = {
+  id: string;
+  workflowId?: string;
+  status: string;
+  createdAt: string;
+  startedAt?: string;
+  finishedAt?: string;
+  initialContext?: any;
+  error?: string;
+  result?: JobResult;
+};
+
 export default function Page() {
-  const [jobs, setJobs] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
     async function loadJobs() {
@@ -140,37 +168,38 @@ export default function Page() {
             )}
 
             {/* Images */}
-            {selectedJob?.result?.images?.length > 0 && (
-              <div className="space-y-2 mt-4">
-                <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                  Generated Images
-                </p>
+            {Array.isArray(selectedJob?.result?.images) &&
+              selectedJob.result.images.length > 0 && (
+                <div className="space-y-2 mt-4">
+                  <p className="text-[10px] uppercase tracking-[0.16em] text-slate-400">
+                    Generated Images
+                  </p>
 
-                <div className="flex flex-wrap gap-3">
-                  {selectedJob.result.images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className="group relative w-28 h-28 rounded-md overflow-hidden border border-slate-800 bg-slate-900 hover:border-cyan-400/60 transition"
-                    >
-                      <img
-                        src={img.url}
-                        alt={`Generated image ${idx + 1}`}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
+                  <div className="flex flex-wrap gap-3">
+                    {selectedJob.result.images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="group relative w-28 h-28 rounded-md overflow-hidden border border-slate-800 bg-slate-900 hover:border-cyan-400/60 transition"
+                      >
+                        <img
+                          src={img.url}
+                          alt={`Generated image ${idx + 1}`}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
 
-                      {img.meta && (
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center p-2">
-                          <p className="text-[9px] text-slate-200 text-center leading-tight">
-                            {img.meta.model || "Image"}<br />
-                            {img.meta.width}×{img.meta.height}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                        {img.meta && (
+                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center p-2">
+                            <p className="text-[9px] text-slate-200 text-center leading-tight">
+                              {img.meta.model || "Image"}<br />
+                              {img.meta.width}×{img.meta.height}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
           </div>
         )}

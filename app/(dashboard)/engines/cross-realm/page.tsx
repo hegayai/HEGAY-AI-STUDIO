@@ -96,7 +96,7 @@ export default function CrossRealmEnginePage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function SelectBox({ label }) {
+function SelectBox({ label }: { label: string }) {
   return (
     <div className="space-y-2">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
@@ -115,13 +115,15 @@ function SelectBox({ label }) {
   );
 }
 
-function OutputBlock({ title }) {
+function OutputBlock({ title }: { title: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-3 space-y-1">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
         {title}
       </div>
-      <div className="text-sm text-slate-300">Generated analysis will appear here.</div>
+      <div className="text-sm text-slate-300">
+        Generated analysis will appear here.
+      </div>
     </div>
   );
 }
@@ -157,7 +159,7 @@ function InteractionNodes() {
   );
 }
 
-function Node({ className }) {
+function Node({ className }: { className: string }) {
   return (
     <div
       className={`absolute h-6 w-6 rounded-full bg-[#1A2A4F] border border-[#F5D48A88] shadow-[0_0_20px_rgba(36,58,107,0.8)] ${className}`}

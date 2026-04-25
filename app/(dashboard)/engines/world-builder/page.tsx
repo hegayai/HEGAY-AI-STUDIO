@@ -67,13 +67,15 @@ export default function WorldBuilderEnginePage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function OutputBlock({ title }) {
+function OutputBlock({ title }: { title: string }) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 px-4 py-3 space-y-1">
       <div className="text-[11px] uppercase tracking-[0.2em] text-slate-500">
         {title}
       </div>
-      <div className="text-sm text-slate-300">Generated content will appear here.</div>
+      <div className="text-sm text-slate-300">
+        Generated content will appear here.
+      </div>
     </div>
   );
 }

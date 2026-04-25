@@ -9,7 +9,9 @@ export default function EventTriggerPanel() {
   const [workflowId, setWorkflowId] = useState("");
   const [eventType, setEventType] = useState("");
   const [threshold, setThreshold] = useState("");
-  const notify = useNotify();
+
+  // ✅ FIXED — destructure notify from the context
+  const { notify } = useNotify();
 
   const loadData = async () => {
     try {

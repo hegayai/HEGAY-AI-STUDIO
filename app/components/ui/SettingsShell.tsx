@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   FiSettings,
@@ -11,7 +11,13 @@ import {
   FiGlobe,
 } from "react-icons/fi";
 
-const sections = [
+type Section = {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const sections: Section[] = [
   { id: "general", label: "General", icon: FiSettings },
   { id: "account", label: "Account", icon: FiUser },
   { id: "notifications", label: "Notifications", icon: FiBell },
@@ -21,19 +27,22 @@ const sections = [
 ];
 
 export default function SettingsShell() {
-  const [active, setActive] = useState("general");
+  const [active, setActive] = useState<string>("general");
 
-  const ActiveIcon = sections.find((s) => s.id === active)?.icon ?? FiSettings;
+  const ActiveIcon =
+    sections.find((s) => s.id === active)?.icon ?? FiSettings;
+
   const activeLabel =
     sections.find((s) => s.id === active)?.label ?? "Settings";
 
   return (
     <div className="grid gap-8 md:grid-cols-[260px,1fr]">
-      {/* Left: Sidebar */}
+      {/* Sidebar */}
       <aside className="h-full rounded-2xl border border-white/10 bg-black/40 p-4 backdrop-blur-xl">
         <h2 className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
           Settings
         </h2>
+
         <nav className="space-y-1">
           {sections.map(({ id, label, icon: Icon }) => {
             const isActive = id === active;
@@ -55,12 +64,13 @@ export default function SettingsShell() {
         </nav>
       </aside>
 
-      {/* Right: Content */}
+      {/* Content */}
       <section className="rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-xl">
         <header className="mb-6 flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-500/20 border border-purple-400/40">
             <ActiveIcon className="h-5 w-5 text-purple-200" />
           </div>
+
           <div>
             <h1 className="text-base font-semibold text-slate-100">
               {activeLabel}
@@ -90,7 +100,19 @@ export default function SettingsShell() {
   );
 }
 
-function Card({ title, description, children }) {
+/* --------------------------------------------- */
+/* COMPONENTS                                    */
+/* --------------------------------------------- */
+
+function Card({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-xl border border-white/10 bg-black/40 p-4">
       <h3 className="text-sm font-semibold text-slate-100">{title}</h3>
@@ -102,19 +124,32 @@ function Card({ title, description, children }) {
   );
 }
 
-function ToggleRow({ label, hint }) {
+function ToggleRow({
+  label,
+  hint,
+}: {
+  label: string;
+  hint?: string;
+}) {
   return (
     <div className="flex items-center justify-between gap-4">
       <div>
         <p className="text-xs text-slate-100">{label}</p>
-        {hint && <p className="text-[0.7rem] text-slate-500 mt-0.5">{hint}</p>}
+        {hint && (
+          <p className="text-[0.7rem] text-slate-500 mt-0.5">{hint}</p>
+        )}
       </div>
+
       <button className="relative inline-flex h-5 w-9 items-center rounded-full bg-purple-500/60">
         <span className="inline-block h-4 w-4 translate-x-4 rounded-full bg-white shadow transition" />
       </button>
     </div>
   );
 }
+
+/* --------------------------------------------- */
+/* SETTINGS SECTIONS                             */
+/* --------------------------------------------- */
 
 function GeneralSettings() {
   return (

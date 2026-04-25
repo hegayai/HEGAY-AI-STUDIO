@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useToast } from "./ToastManager";
 
 export default function NotificationCenter() {
   const [open, setOpen] = useState(false);
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState<
+    { id: number; message: string; time: Date }[]
+  >([]);
 
   useEffect(() => {
     function togglePanel() {
@@ -18,15 +19,16 @@ export default function NotificationCenter() {
   }, []);
 
   useEffect(() => {
-    function handleLog(e) {
+    function handleLog(e: CustomEvent<{ message: string }>) {
       setLogs((prev) => [
         { id: Date.now(), message: e.detail.message, time: new Date() },
         ...prev,
       ]);
     }
 
-    document.addEventListener("log-event", handleLog);
-    return () => document.removeEventListener("log-event", handleLog);
+    document.addEventListener("log-event", handleLog as EventListener);
+    return () =>
+      document.removeEventListener("log-event", handleLog as EventListener);
   }, []);
 
   return (

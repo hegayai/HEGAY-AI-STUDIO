@@ -1,12 +1,12 @@
-import { ModelPayload, ModelResponse } from "../callModel";
+import { ModelCallInput, ModelCallResult } from "../callModel";
 import { formatPrompt } from "../utils/format";
 
 export async function callOpenAI({
   model,
-  systemPrompt,
-  userPrompt,
-}: ModelPayload): Promise<ModelResponse> {
-  const prompt = formatPrompt(systemPrompt, userPrompt);
+  systemPrompt = "",
+  prompt,
+}: ModelCallInput): Promise<ModelCallResult> {
+  const formatted = formatPrompt(systemPrompt, prompt);
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -16,7 +16,7 @@ export async function callOpenAI({
     },
     body: JSON.stringify({
       model,
-      messages: [{ role: "user", content: prompt }],
+      messages: [{ role: "user", content: formatted }],
     }),
   });
 
@@ -24,5 +24,7 @@ export async function callOpenAI({
 
   return {
     output: data?.choices?.[0]?.message?.content ?? "No output returned.",
+    provider: "openai",
+    model,
   };
 }

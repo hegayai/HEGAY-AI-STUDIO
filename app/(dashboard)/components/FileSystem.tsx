@@ -2,46 +2,35 @@
 
 import { createContext, useContext, useState } from "react";
 
-const FileSystemContext = createContext(null);
+type FileItem = {
+  id: string;
+  name: string;
+  type: "ritual" | "document";
+  folder: string;
+  action?: string;
+  content?: string;
+};
 
-export function FileSystemProvider({ children }) {
-  const [files, setFiles] = useState([
-    {
-      id: "origin-ritual",
-      name: "Origin Ritual.hgx",
-      type: "ritual",
-      action: "origin-creation",
-      folder: "/rituals",
-    },
-    {
-      id: "dream-manifest",
-      name: "Dream Manifest.hgx",
-      type: "document",
-      content: "Dream realm manifest file",
-      folder: "/documents",
-    },
-    {
-      id: "avatar-profile",
-      name: "Avatar Profile.hgx",
-      type: "document",
-      content: "Avatar realm profile data",
-      folder: "/documents",
-    },
-  ]);
+type FileSystemContextType = {
+  files: FileItem[];
+  folders: Record<string, string[]>;
+};
 
-  const [folders] = useState([
-    { path: "/", name: "Home" },
-    { path: "/rituals", name: "Rituals" },
-    { path: "/documents", name: "Documents" },
-  ]);
+const FileSystemContext = createContext<FileSystemContextType | null>(null);
+
+export function useFileSystem() {
+  const ctx = useContext(FileSystemContext);
+  if (!ctx) throw new Error("useFileSystem must be used inside FileSystemProvider");
+  return ctx;
+}
+
+export function FileSystemProvider({ children }: { children: React.ReactNode }) {
+  const [files] = useState<FileItem[]>([]);
+  const [folders] = useState<Record<string, string[]>>({});
 
   return (
     <FileSystemContext.Provider value={{ files, folders }}>
       {children}
     </FileSystemContext.Provider>
   );
-}
-
-export function useFileSystem() {
-  return useContext(FileSystemContext);
 }

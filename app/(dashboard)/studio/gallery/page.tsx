@@ -2,13 +2,20 @@
 
 import { useEffect, useState } from "react";
 
+type GalleryItem = {
+  id: string;
+  type: "image" | "video";
+  url: string;
+  prompt?: string;
+};
+
 export default function GalleryPage() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<GalleryItem[]>([]);
 
   useEffect(() => {
     fetch("/api/media/list")
       .then((res) => res.json())
-      .then((data) => setItems(data.items || []));
+      .then((data) => setItems((data.items as GalleryItem[]) || []));
   }, []);
 
   return (

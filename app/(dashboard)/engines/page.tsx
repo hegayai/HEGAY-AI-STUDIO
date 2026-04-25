@@ -84,7 +84,21 @@ export default function EngineHubPage() {
 
 /* ───────────────── COMPONENTS ───────────────── */
 
-function EngineCard({ title, description, icon: Icon, href, color }) {
+type EngineCardProps = {
+  title: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  href: string;
+  color: string;
+};
+
+function EngineCard({
+  title,
+  description,
+  icon: Icon,
+  href,
+  color,
+}: EngineCardProps) {
   return (
     <a
       href={href}

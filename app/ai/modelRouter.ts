@@ -1,26 +1,23 @@
-import { callOpenAI } from "./providers/openai";
-import { callDeepInfra } from "./providers/deepinfra";
-import { callGroq } from "./providers/groq";
+import { NextResponse } from "next/server";
+import { systemPrompt } from "@/app/ai/prompts/systemPrompt";
+import { callModel } from "@/app/ai/callModel";
 
-export async function modelRouter(
-  provider: string,
-  model: string,
-  systemPrompt: string,
-  userPrompt: string
-) {
-  const payload = { model, systemPrompt, userPrompt };
+export async function POST(req: Request) {
+  try {
+    const { prompt, model } = await req.json();
 
-  switch (provider) {
-    case "openai":
-      return callOpenAI(payload);
+    const result = await callModel({
+      prompt,
+      model,
+      systemPrompt,
+    });
 
-    case "deepinfra":
-      return callDeepInfra(payload);
-
-    case "groq":
-      return callGroq(payload);
-
-    default:
-      return { output: `Unknown provider: ${provider}` };
+    return NextResponse.json({ result });
+  } catch (error) {
+    console.error("ModelRouter Error:", error);
+    return NextResponse.json(
+      { error: "Model router failed." },
+      { status: 500 }
+    );
   }
 }

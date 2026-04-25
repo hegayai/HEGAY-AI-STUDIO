@@ -8,9 +8,9 @@ export default function MinimalMotionToggle() {
   return (
     <button
       onClick={toggleMinimal}
-      className="fixed bottom-4 right-4 z-[9999] px-4 py-2 rounded-lg bg-black/70 border border-white/10 text-[11px] text-slate-300 backdrop-blur-xl hover:bg-white/5 transition-all"
+      className="px-3 py-1 rounded bg-slate-800 text-white text-xs"
     >
-      Motion: {minimal ? "Minimal" : "Full"}
+      {minimal ? "Disable Minimal Motion" : "Enable Minimal Motion"}
     </button>
   );
 }
