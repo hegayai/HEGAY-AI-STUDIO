@@ -4,16 +4,20 @@ import { getCurrentUser } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser(req);
+
     if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
-    const { title } = await req.json();
+    const { title, content } = await req.json();
 
-    if (!title) {
+    if (!title || !content) {
       return NextResponse.json(
-        { error: "Missing thread title" },
+        { error: "Missing thread title or content" },
         { status: 400 }
       );
     }
@@ -22,10 +26,14 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         title,
+        content,
       },
     });
 
-    return NextResponse.json({ thread });
+    return NextResponse.json({
+      success: true,
+      thread,
+    });
   } catch (err: any) {
     return NextResponse.json(
       { error: err.message || "Failed to create thread" },
