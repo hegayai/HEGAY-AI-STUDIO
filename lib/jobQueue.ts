@@ -1,5 +1,5 @@
 // lib/jobQueue.ts
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/src/core/db/client";
 
 /**
  * Enqueue a new job for a workflow.
