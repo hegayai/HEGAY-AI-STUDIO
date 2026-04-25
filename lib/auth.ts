@@ -8,10 +8,13 @@ const SECRET = process.env.AUTH_SECRET || "default_secret_key";
 // ------------------------------------------------------
 // COOKIE SESSION AUTH (Dashboard)
 // ------------------------------------------------------
-export function createSession(userId: string) {
+export async function createSession(userId: string) {
   const token = jwt.sign({ userId }, SECRET, { expiresIn: "7d" });
 
-  cookies().set("session", token, {
+  // Next.js 15/16: cookies() must be awaited
+  const cookieStore = await cookies();
+
+  cookieStore.set("session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -23,7 +26,7 @@ export function createSession(userId: string) {
 
 export async function getCurrentUserFromCookie() {
   try {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const token = cookieStore.get("session")?.value;
 
     if (!token) return null;
@@ -40,8 +43,10 @@ export async function getCurrentUserFromCookie() {
   }
 }
 
-export function clearSession() {
-  cookies().set("session", "", {
+export async function clearSession() {
+  const cookieStore = await cookies();
+
+  cookieStore.set("session", "", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
