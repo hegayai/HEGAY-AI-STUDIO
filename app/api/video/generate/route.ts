@@ -2,20 +2,21 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/src/core/db/client";
 import { getCurrentUser, getTodayUsage, canGenerateVideo } from "@/lib/auth";
 
-const FAL_KEY = process.env.FAL_KEY;
+// ⭐ Import your provider
+import { fal } from "@/app/ai/providers/fal";
+
+// ⭐ Import your unified model router
+import { modelRouter } from "@/src/core/model-router";
 
 export async function POST(req: Request) {
   try {
-    if (!FAL_KEY) {
-      return NextResponse.json({ error: "Missing FAL_KEY" }, { status: 500 });
-    }
-
     const user = await getCurrentUser(req);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { prompt } = await req.json();
+    const { prompt, duration } = await req.json();
+
     if (!prompt || typeof prompt !== "string") {
       return NextResponse.json(
         { error: "Prompt is required" },
@@ -31,51 +32,53 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch("https://fal.run/fal-ai/flux-video", {
-      method: "POST",
-      headers: {
-        Authorization: `Key ${FAL_KEY}`,
-        "Content-Type": "application/json",
+    // ⭐ Unified provider-based video generation
+    const result = await modelRouter({
+      model: "flux-video",
+      input: {
+        prompt,
+        duration: duration || 6
       },
-      body: JSON.stringify({ prompt }),
+      provider: fal,
+      type: "video"
     });
 
-    const result = await response.json();
-
-    if (!response.ok || !result.video_url) {
+    if (!result?.url) {
       return NextResponse.json(
-        { error: "Fal.ai video generation failed", raw: result },
+        { error: "Video generation failed", raw: result },
         { status: 500 }
       );
     }
 
-    const videoUrl = result.video_url;
+    const videoUrl = result.url;
 
-    // ⭐ FIXED: Removed invalid "title" field
+    // ⭐ Save media
     await prisma.media.create({
       data: {
         userId: user.id,
         type: "video",
         url: videoUrl,
-        prompt, // valid field in your Prisma schema
-      },
+        prompt
+      }
     });
 
+    // ⭐ Update usage
     await prisma.usage.update({
       where: { id: usage.id },
-      data: { videosUsed: usage.videosUsed + 1 },
+      data: { videosUsed: usage.videosUsed + 1 }
     });
 
     return NextResponse.json({
       success: true,
-      url: videoUrl,
+      url: videoUrl
     });
+
   } catch (error) {
     console.error("Video Generation Error:", error);
     return NextResponse.json(
       {
-        error: "Fal.ai video generation error",
-        details: String(error),
+        error: "Video generation error",
+        details: String(error)
       },
       { status: 500 }
     );

@@ -1,10 +1,7 @@
+// app/api/audio/summarize/route.ts
 import { NextResponse } from "next/server";
-
-// ⭐ Provider architecture
-import { fal } from "@/app/ai/providers/fal";
-
-// ⭐ Unified model router
 import { modelRouter } from "@/src/core/model-router";
+import { fal } from "@/app/ai/providers/fal";
 
 export const runtime = "nodejs";
 
@@ -12,23 +9,22 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    const mode = form.get("mode") as string;
-    const language = form.get("language") as string;
     const file = form.get("file") as File | null;
+    const mode = (form.get("mode") as string) || "summary"; 
+    // "summary" | "bullet-points" | "actions" | "chapters"
+    const language = (form.get("language") as string) || "auto";
 
     if (!file) {
       return NextResponse.json(
-        { error: "No file uploaded" },
+        { error: "No audio file uploaded" },
         { status: 400 }
       );
     }
 
-    // ⭐ Convert file to ArrayBuffer → Uint8Array
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-    // ⭐ Unified provider-based transcription
     const result = await modelRouter({
-      model: "subtitle-transcribe",
+      model: "audio-summarize",
       input: {
         file: fileBuffer,
         filename: file.name,
@@ -39,21 +35,25 @@ export async function POST(req: Request) {
       type: "audio"
     });
 
-    if (!result?.text) {
+    if (!result?.summary && !result?.items) {
       return NextResponse.json(
-        { error: "Transcription failed", raw: result },
+        { error: "Audio summarization failed", raw: result },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
-      text: result.text
+      summary: result.summary || null,
+      items: result.items || null,        // bullets / actions / chapters
+      language: result.language || null
     });
 
-  } catch (err) {
-    console.error("Subtitle generation error:", err);
+  } catch (error) {
     return NextResponse.json(
-      { error: "Subtitle generation failed", details: String(err) },
+      {
+        error: "Audio summarization error",
+        details: String(error)
+      },
       { status: 500 }
     );
   }

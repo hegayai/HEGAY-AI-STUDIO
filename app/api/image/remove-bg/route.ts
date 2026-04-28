@@ -1,35 +1,56 @@
-// app/api/image/remove-bg/route.ts
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const {
-    image,
-    mode,
-    refine,
-    feather,
-    replaceColor,
-  } = body;
+// ⭐ Import your provider
+import { fal } from "@/app/ai/providers/fal";
 
-  const res = await fetch(process.env.IMAGE_REMOVE_BG_API_URL!, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.IMAGE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+// ⭐ Import your unified model router
+import { modelRouter } from "@/src/core/model-router";
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const {
       image,
       mode,
       refine,
       feather,
-      replaceColor,
-    }),
-  });
+      replaceColor
+    } = body;
 
-  const data = await res.json();
+    // ⭐ Unified provider-based background removal
+    const result = await modelRouter({
+      model: "image-remove-bg",
+      input: {
+        image,
+        mode,
+        refine,
+        feather,
+        replaceColor
+      },
+      provider: fal,
+      type: "image"
+    });
 
-  return NextResponse.json({
-    url: data?.meta?.url || data?.url || null,
-    cutout: data?.cutout || null,
-  });
+    if (!result?.url) {
+      return NextResponse.json(
+        { error: "Background removal failed", raw: result },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      url: result.url,
+      cutout: result.cutout || null
+    });
+
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Background removal error",
+        details: String(error)
+      },
+      { status: 500 }
+    );
+  }
 }

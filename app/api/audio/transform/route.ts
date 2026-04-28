@@ -1,27 +1,55 @@
 import { NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const { audio, style, enhance, model, mode } = body;
+// ⭐ Import your provider
+import { fal } from "@/app/ai/providers/fal";
 
-  const res = await fetch(process.env.AUDIO_TRANSFORM_API_URL!, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${process.env.AUDIO_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+// ⭐ Import your unified model router
+import { modelRouter } from "@/src/core/model-router";
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const {
       audio,
       style,
       enhance,
       model,
-      mode,
-    }),
-  });
+      mode
+    } = body;
 
-  const data = await res.json();
+    // ⭐ Unified provider-based audio transform
+    const result = await modelRouter({
+      model: "audio-transform",
+      input: {
+        audio,
+        style,
+        enhance,
+        model,
+        mode
+      },
+      provider: fal,
+      type: "audio"
+    });
 
-  return NextResponse.json({
-    url: data?.meta?.url || data?.url || data?.audio || null,
-  });
+    if (!result?.url) {
+      return NextResponse.json(
+        { error: "Audio transform failed", raw: result },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      url: result.url
+    });
+
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Audio transform error",
+        details: String(error)
+      },
+      { status: 500 }
+    );
+  }
 }

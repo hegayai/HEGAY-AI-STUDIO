@@ -1,19 +1,15 @@
 import { NextResponse } from "next/server";
-import {
-  getCurrentUser,
-  getTodayUsage,
-  canGenerateImage,
-} from "@/lib/auth";
+import { getCurrentUser, getTodayUsage, canGenerateImage } from "@/lib/auth";
 import { prisma } from "@/src/core/db/client";
 
-const FAL_KEY = process.env.FAL_KEY;
+// ⭐ Import your provider
+import { fal } from "@/app/ai/providers/fal";
+
+// ⭐ Import your unified model router
+import { modelRouter } from "@/src/core/model-router";
 
 export async function POST(req: Request) {
   try {
-    if (!FAL_KEY) {
-      return NextResponse.json({ error: "Missing FAL_KEY" }, { status: 500 });
-    }
-
     const user = await getCurrentUser(req);
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -35,33 +31,29 @@ export async function POST(req: Request) {
       );
     }
 
-    const response = await fetch("https://fal.run/fal-ai/flux-pro", {
-      method: "POST",
-      headers: {
-        Authorization: `Key ${FAL_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ prompt }),
+    // ⭐ Unified provider-based generation
+    const result = await modelRouter({
+      model: "flux-pro",
+      input: { prompt },
+      provider: fal,
+      type: "image",
     });
 
-    const result = await response.json();
-
-    if (!response.ok || !result.images?.[0]?.url) {
+    if (!result?.url) {
       return NextResponse.json(
         { error: "Fal.ai generation failed", raw: result },
         { status: 500 }
       );
     }
 
-    const imageUrl = result.images[0].url;
+    const imageUrl = result.url;
 
-    // ⭐ FIXED: Removed invalid "title" field
     await prisma.media.create({
       data: {
         userId: user.id,
         type: "image",
         url: imageUrl,
-        prompt, // valid field in your Prisma schema
+        prompt,
       },
     });
 

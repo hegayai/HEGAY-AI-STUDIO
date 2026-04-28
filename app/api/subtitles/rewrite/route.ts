@@ -9,47 +9,53 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const {
-      name,
-      description,
-      industry,
-      style = "modern" 
-      // "modern" | "minimal" | "bold" | "playful" | "luxury" | "tech" | "cinematic"
+      text,          // SRT or plain text
+      style,         // "cinematic" | "formal" | "casual" | "concise" | "emotional" | "tiktok" | "documentary" | "humorous" | "expanded" | "simple"
+      language = "auto",
+      format = "srt" // "srt" | "text"
     } = body;
 
-    if (!name || !description) {
+    if (!text) {
       return NextResponse.json(
-        { error: "Brand name and description are required" },
+        { error: "Text or subtitles are required" },
+        { status: 400 }
+      );
+    }
+
+    if (!style) {
+      return NextResponse.json(
+        { error: "Rewrite style is required" },
         { status: 400 }
       );
     }
 
     const result = await modelRouter({
-      model: "brand-kit-generate",
+      model: "subtitle-rewrite",
       input: {
-        name,
-        description,
-        industry,
-        style
+        text,
+        style,
+        language,
+        format
       },
       provider: fal,
       type: "text"
     });
 
-    if (!result?.brandKit) {
+    if (!result?.output) {
       return NextResponse.json(
-        { error: "Brand kit generation failed", raw: result },
+        { error: "Subtitle rewrite failed", raw: result },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
-      brandKit: result.brandKit
+      output: result.output
     });
 
   } catch (error) {
     return NextResponse.json(
       {
-        error: "Brand kit generation error",
+        error: "Subtitle rewrite error",
         details: String(error)
       },
       { status: 500 }

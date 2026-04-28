@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-
-// ⭐ Provider architecture
-import { fal } from "@/app/ai/providers/fal";
-
-// ⭐ Unified model router
 import { modelRouter } from "@/src/core/model-router";
+import { fal } from "@/app/ai/providers/fal";
 
 export const runtime = "nodejs";
 
@@ -12,23 +8,23 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    const mode = form.get("mode") as string;
-    const language = form.get("language") as string;
     const file = form.get("file") as File | null;
+    const mode = (form.get("mode") as string) || "summary"; 
+    // "summary" | "bullet-points" | "actions" | "chapters"
+    const language = (form.get("language") as string) || "auto";
 
     if (!file) {
       return NextResponse.json(
-        { error: "No file uploaded" },
+        { error: "No video file uploaded" },
         { status: 400 }
       );
     }
 
-    // ⭐ Convert file to ArrayBuffer → Uint8Array
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
-    // ⭐ Unified provider-based transcription
+    // ⭐ Unified provider-based video summarization
     const result = await modelRouter({
-      model: "subtitle-transcribe",
+      model: "video-summarize",
       input: {
         file: fileBuffer,
         filename: file.name,
@@ -36,24 +32,28 @@ export async function POST(req: Request) {
         language
       },
       provider: fal,
-      type: "audio"
+      type: "video"
     });
 
-    if (!result?.text) {
+    if (!result?.summary && !result?.items) {
       return NextResponse.json(
-        { error: "Transcription failed", raw: result },
+        { error: "Video summarization failed", raw: result },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
-      text: result.text
+      summary: result.summary || null,
+      items: result.items || null,
+      language: result.language || null
     });
 
-  } catch (err) {
-    console.error("Subtitle generation error:", err);
+  } catch (error) {
     return NextResponse.json(
-      { error: "Subtitle generation failed", details: String(err) },
+      {
+        error: "Video summarization error",
+        details: String(error)
+      },
       { status: 500 }
     );
   }
